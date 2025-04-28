@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+
 
 const Section = styled.section`
   padding: 4rem 10%;
@@ -9,6 +11,7 @@ const Section = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
 `;
 
 const Title = styled.h2`
@@ -51,6 +54,8 @@ const Botao = styled.button`
 `;
 
 function QuemSomos() {
+  const navigate = useNavigate();  // Hook do React Router para navegação
+
   return (
     <Section id="quem-somos">
       <Title>Soluções Jurídicas e Estratégicas para Questões Ambientais</Title>
@@ -58,7 +63,7 @@ function QuemSomos() {
         O Saes Advogados alia excelência jurídica a sólido conhecimento técnico e de negócio, 
         com o objetivo de evitar problemas, antecipar oportunidades e encontrar soluções para questões ambientais.
       </Paragraph>
-      <Botao onClick={() => window.location.href = '#contato'}>
+      <Botao onClick={() => navigate('/escritorio')}>
         <span>+</span>
         Leia Mais
       </Botao>
@@ -67,9 +72,3 @@ function QuemSomos() {
 }
 
 export default QuemSomos;
-
-
-
-
-
-

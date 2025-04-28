@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import image from '../images/logo-saes.png'
+import { useNavigate, useLocation } from 'react-router-dom';
+import image from '../images/logo-saes.png';
+
 // Container geral do topo fixo
 const TopBar = styled.div`
   position: fixed;
@@ -14,7 +16,7 @@ const TopBar = styled.div`
 `;
 
 const LogoContainer = styled.div`
-  background: rgba(255, 255, 255, 0.8); /* Fundo branco meio transparente */
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
   width: 100%;
   display: flex;
@@ -24,7 +26,7 @@ const LogoContainer = styled.div`
 `;
 
 const Logo = styled.img`
-  max-width: 120px;
+  max-width: 90px;
   height: auto;
 `;
 
@@ -35,7 +37,7 @@ const NavbarContainer = styled.div`
 `;
 
 const Navbar = styled.nav`
-  background-color: rgba(0, 0, 0, 0.6); /* Preto transparente */
+  background-color: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(10px);
   width: 80%;
   padding: 0.5rem;
@@ -66,6 +68,9 @@ const NavbarLink = styled.a`
   padding: 0.3rem 0.6rem;
   border-radius: 5px;
   transition: all 0.3s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
 
   &:hover {
     border-bottom: 2px solid #f90;
@@ -116,10 +121,38 @@ const SearchBarUnderline = styled.div`
 `;
 
 const HeaderSpacer = styled.div`
-  height: 170px; /* Espaço reservado no topo para não esconder o conteúdo */
+  height: 170px;
 `;
 
 function Header() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleNavigation = (sectionId) => {
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        scrollToSection(sectionId);
+      }, 100);
+    } else {
+      scrollToSection(sectionId);
+    }
+  };
+
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const topOffset = 160; // Ajuste para a altura da sua TopBar
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - topOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth',
+      });
+    }
+  };
+
   return (
     <>
       <TopBar>
@@ -130,11 +163,11 @@ function Header() {
         <NavbarContainer>
           <Navbar>
             <NavbarList>
-              <NavbarItem><NavbarLink href="#inicio">Início</NavbarLink></NavbarItem>
-              <NavbarItem><NavbarLink href="#quem-somos">Quem Somos</NavbarLink></NavbarItem>
-              <NavbarItem><NavbarLink href="#atuacao">Atuação</NavbarLink></NavbarItem>
-              <NavbarItem><NavbarLink href="#equipe">Equipe</NavbarLink></NavbarItem>
-              <NavbarItem><NavbarLink href="#contato">Contato</NavbarLink></NavbarItem>
+              <NavbarItem><NavbarLink as="button" onClick={() => handleNavigation('noticias')}>Início</NavbarLink></NavbarItem>
+              <NavbarItem><NavbarLink as="button" onClick={() => handleNavigation('quem-somos')}>Quem Somos</NavbarLink></NavbarItem>
+              <NavbarItem><NavbarLink as="button" onClick={() => handleNavigation('atuacao')}>Atuação</NavbarLink></NavbarItem>
+              <NavbarItem><NavbarLink as="button" onClick={() => handleNavigation('equipe')}>Equipe</NavbarLink></NavbarItem>
+              <NavbarItem><NavbarLink as="button" onClick={() => handleNavigation('newsletter')}>Contato</NavbarLink></NavbarItem>
               <NavbarItem><NavbarLink href="/newsletter">Newsletter</NavbarLink></NavbarItem>
               <NavbarItem><NavbarLink href="/publicacoes">Publicações</NavbarLink></NavbarItem>
               <NavbarItem><NavbarLink href="/artigos">Artigos</NavbarLink></NavbarItem>
@@ -154,7 +187,6 @@ function Header() {
         </NavbarContainer>
       </TopBar>
 
-      {/* Espaço para empurrar o conteúdo */}
       <HeaderSpacer />
     </>
   );
