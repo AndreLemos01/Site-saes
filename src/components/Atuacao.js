@@ -1,6 +1,7 @@
+// src/pages/Atuacao.js
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FaLeaf, FaSearch, FaCheckCircle, FaBalanceScale, FaGavel } from 'react-icons/fa';
+import Cards from '../components/Cards';
 
 const Section = styled.section`
   padding: 4rem 10%;
@@ -12,72 +13,6 @@ const Title = styled.h2`
   font-size: 2.5rem;
   color: #333;
   margin-bottom: 2rem;
-`;
-
-const ServiceGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 2rem;
-`;
-
-const ServiceCard = styled.div`
-  background-color: white;
-  border-radius: 10px;
-  padding: 2rem;
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
-  width: 100%;
-  cursor: pointer;
-  opacity: ${({ isHovered, isActive }) => (isHovered && !isActive ? 0.5 : 1)};
-
-  &:hover {
-    transform: translateY(-10px);
-    box-shadow: none;
-  }
-
-  h3 {
-    font-size: 1.1rem;
-    color: orange;
-    margin-bottom: 1rem;
-  }
-
-  p {
-    font-size: 0.8rem;
-    color: #666;
-  }
-
-  svg {
-    font-size: 2.5rem;
-    color: black;
-    margin-bottom: 1rem;
-  }
-`;
-
-const Botao = styled.button`
-  width: 150px;
-  padding: 0.8rem 1.5rem;
-  font-size: 1rem;
-  background-color: white;
-  border: 2px solid orange;
-  border-radius: 8px;
-  color: black;
-  cursor: pointer;
-  transition: 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 2rem;
-  margin: 0 auto;
-
-  &:hover {
-    background-color: orange;
-    color: white;
-  }
-
-  svg {
-    font-size: 1.5rem;
-  }
 `;
 
 const TabSection = styled.div`
@@ -145,35 +80,6 @@ const RightSide = styled.div`
 
 function Atuacao() {
   const [activeTab, setActiveTab] = useState(0);
-  const [hoveredCard, setHoveredCard] = useState(null);
-
-  const services = [
-    {
-      icon: <FaLeaf />,
-      title: "Licenciamento Ambiental e Urbanístico",
-      description: "Consultoria jurídica e estratégica para prevenção de riscos e solução de conflitos em todas as etapas do licenciamento."
-    },
-    {
-      icon: <FaSearch />,
-      title: "Due Diligence Ambiental e Análise de Risco",
-      description: "Avaliação de riscos e passivos para antecipar necessidades e evitar questionamentos."
-    },
-    {
-      icon: <FaCheckCircle />,
-      title: "Compliance Ambiental",
-      description: "Programas de compliance e normatização de processos internos."
-    },
-    {
-      icon: <FaBalanceScale />,
-      title: "Pareceres e Opiniões Legais",
-      description: "Análises de questões ambientais específicas e sensíveis, para dar segurança e orientar à tomada de decisão pela empresa, bem como para subsidiar pleitos em processos judiciais e administrativos."
-    },
-    {
-      icon: <FaGavel />,
-      title: "Conflitos Ambientais",
-      description: "Atuação em ações civis públicas, criminais e outras ações judiciais, infrações administrativas, termos de ajustamento de conduta e outros acordos."
-    }
-  ];
 
   const tabs = [
     {
@@ -182,7 +88,7 @@ function Atuacao() {
       rightContent: (
         <>
           <h3>Estados do país</h3>
-          <p>Atuamos em 20 estados, nas regiões Sudeste, Sul, Centro-Oeste, Norte e Nordeste. A experiência e a base de dados decorrente dessa atuação nacional contribuem para a obtenção de soluções céleres e eficazes para questões ambientais de nossos clientes em qualquer local do Brasil.</p>
+          <p>Atuamos em 20 estados nas regiões Sudeste, Sul, Centro-Oeste, Norte e Nordeste, obtendo soluções rápidas e eficazes para nossos clientes.</p>
         </>
       )
     },
@@ -192,7 +98,7 @@ function Atuacao() {
       rightContent: (
         <>
           <h3>Empreendimentos</h3>
-          <p>Soluções personalizadas no licenciamento ambiental de mais de 50 empreendimentos, nos diversos setores da economia, como portuário, geração e transmissão de energia, imobiliário, saneamento, mineração, petróleo e gás, construção naval, distribuidoras de combustível, aterros sanitários e indústrias em geral.</p>
+          <p>Soluções personalizadas no licenciamento ambiental de mais de 50 empreendimentos de diversos setores econômicos.</p>
         </>
       )
     },
@@ -202,7 +108,7 @@ function Atuacao() {
       rightContent: (
         <>
           <h3>Causas ambientais</h3>
-          <p>Com atendimento personalizado, representamos clientes em mais de 250 processos judiciais e administrativos ambientais, como ações judiciais cíveis e criminais (perante o STF, STJ, tribunais regionais e locais e em primeira instância), inquéritos civis e penais, processos administrativos e na negociação de acordos e termos de ajustamento de conduta.</p>
+          <p>Atuação em mais de 250 processos judiciais e administrativos ambientais em todo o Brasil.</p>
         </>
       )
     }
@@ -211,28 +117,7 @@ function Atuacao() {
   return (
     <Section>
       <Title>Atuação</Title>
-      <ServiceGrid>
-        {services.map((service, index) => (
-          <ServiceCard
-            key={index}
-            isHovered={hoveredCard !== null && hoveredCard !== index}
-            isActive={hoveredCard === index}
-            onMouseEnter={() => setHoveredCard(index)}
-            onMouseLeave={() => setHoveredCard(null)}
-          >
-            {service.icon}
-            <h3>{service.title}</h3>
-            <p>{service.description}</p>
-          </ServiceCard>
-        ))}
-      </ServiceGrid>
-
-      <Botao>
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-          <path d="M12 5v14M5 12h14"></path>
-        </svg>
-        Portfólio
-      </Botao>
+      <Cards />
 
       <TabSection>
         <TabHeaders>
