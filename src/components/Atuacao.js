@@ -119,6 +119,11 @@ function Atuacao() {
       <Title>Atuação</Title>
       <Cards />
 
+      <TabContent>
+        <LeftSide>{tabs[activeTab].leftContent}</LeftSide>
+        <RightSide>{tabs[activeTab].rightContent}</RightSide>
+      </TabContent>
+
       <TabSection>
         <TabHeaders>
           {tabs.map((tab, index) => (
@@ -127,11 +132,6 @@ function Atuacao() {
             </TabHeader>
           ))}
         </TabHeaders>
-
-        <TabContent>
-          <LeftSide>{tabs[activeTab].leftContent}</LeftSide>
-          <RightSide>{tabs[activeTab].rightContent}</RightSide>
-        </TabContent>
       </TabSection>
     </Section>
   );

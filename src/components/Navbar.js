@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom'; // Adicionei o Link para navegação
 import image from '../images/logo-saes.png';
 
 // Container geral do topo fixo
@@ -28,6 +28,7 @@ const LogoContainer = styled.div`
 const Logo = styled.img`
   max-width: 90px;
   height: auto;
+  cursor: pointer; /* Adiciona o cursor pointer para indicar que o logo é clicável */
 `;
 
 const NavbarContainer = styled.div`
@@ -157,7 +158,9 @@ function Header() {
     <>
       <TopBar>
         <LogoContainer>
-          <Logo src={image} alt="Logo" />
+          <Link to="/"> {/* Tornando o logo clicável para voltar à página inicial */}
+            <Logo src={image} alt="Logo" />
+          </Link>
         </LogoContainer>
 
         <NavbarContainer>

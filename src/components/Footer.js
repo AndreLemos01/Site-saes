@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { FaLinkedin, FaTwitter, FaInstagram, FaFacebookF } from 'react-icons/fa';
 
 const FooterWrapper = styled.footer.attrs(() => ({ id: "contato" }))`
@@ -94,10 +95,55 @@ const FooterText = styled.p`
 `;
 
 function Footer() {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [categoryID, setCategoryID] = useState(null);
+
+  // Buscar a ID da categoria "Artigos"
+  useEffect(() => {
+    fetch('https://www.saesadvogados.com.br/wp-json/wp/v2/categories')
+      .then(response => response.json())
+      .then(data => {
+        const artigosCategory = data.find(category => category.name === 'Artigos');
+        if (artigosCategory) {
+          setCategoryID(artigosCategory.id);
+        } else {
+          setError('Categoria "Artigos" não encontrada.');
+        }
+      })
+      .catch(err => {
+        setError('Erro ao buscar categorias');
+      });
+  }, []);
+
+  // Buscar os artigos da categoria "Artigos" após obter a categoria ID
+  useEffect(() => {
+    if (categoryID) {
+      fetch(`https://www.saesadvogados.com.br/wp-json/wp/v2/posts?per_page=6&categories=${categoryID}&page=1`)
+        .then(response => response.json())
+        .then(data => {
+          const filteredArticles = data.filter(article => article.title.rendered !== "Newsletter Saes Advogados &#8211; 225");
+          const uniqueArticles = [];
+          filteredArticles.forEach(article => {
+            if (!uniqueArticles.some(existingArticle => existingArticle.id === article.id)) {
+              uniqueArticles.push(article);
+            }
+          });
+          setArticles(uniqueArticles);
+          setLoading(false);
+        })
+        .catch(err => {
+          setError('Erro ao carregar artigos');
+          setLoading(false);
+        });
+    }
+  }, [categoryID]);
+
   return (
     <FooterWrapper>
       <FooterContent>
-        {/* First Section */}
+        {/* Primeira Seção - Saes */}
         <FooterSection>
           <FooterTitle>Saes</FooterTitle>
           <FooterList>
@@ -114,20 +160,25 @@ function Footer() {
           </FooterList>
         </FooterSection>
 
-        {/* Second Section */}
+        {/* Segunda Seção - Blog */}
         <FooterSection>
           <FooterTitle>Blog</FooterTitle>
           <FooterList>
-            <FooterListItem><FooterLink href="#">Última Atualização 1</FooterLink></FooterListItem>
-            <FooterListItem><FooterLink href="#">Última Atualização 2</FooterLink></FooterListItem>
-            <FooterListItem><FooterLink href="#">Última Atualização 3</FooterLink></FooterListItem>
-            <FooterListItem><FooterLink href="#">Última Atualização 4</FooterLink></FooterListItem>
-            <FooterListItem><FooterLink href="#">Última Atualização 5</FooterLink></FooterListItem>
-            <FooterListItem><FooterLink href="#">Última Atualização 6</FooterLink></FooterListItem>
+            {loading && <FooterListItem>Carregando artigos...</FooterListItem>}
+            {error && <FooterListItem>{error}</FooterListItem>}
+            {articles.length > 0 &&
+              articles.map((article) => (
+                <FooterListItem key={article.id}>
+                  <Link to={`/article/${article.id}`} style={{ color: 'white', textDecoration: 'none' }}>
+                    <FooterLink>{article.title.rendered}</FooterLink> {/* Título do artigo como nome do link */}
+                  </Link>
+                </FooterListItem>
+              ))
+            }
           </FooterList>
         </FooterSection>
 
-        {/* Third Section */}
+        {/* Terceira Seção - Contato */}
         <FooterSection>
           <FooterTitle>Entre em contato</FooterTitle>
           <p>contato@saesadvogados.com.br</p>
@@ -158,4 +209,3 @@ function Footer() {
 }
 
 export default Footer;
-
