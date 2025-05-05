@@ -72,55 +72,109 @@ const BackButton = styled.button`
   }
 `;
 
+const SkeletonBox = styled.div`
+  background-color: #ddd;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  animation: pulse 1.5s infinite ease-in-out;
+
+  @keyframes pulse {
+    0% {
+      opacity: 0.7;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.7;
+    }
+  }
+`;
+
+const SkeletonImage = styled(SkeletonBox)`
+  width: 100%;
+  height: 300px;
+`;
+
+const SkeletonTitle = styled(SkeletonBox)`
+  width: 70%;
+  height: 40px;
+`;
+
+const SkeletonText = styled(SkeletonBox)`
+  width: 100%;
+  height: 20px;
+
+  &:nth-child(2) {
+    width: 90%;
+  }
+
+  &:nth-child(3) {
+    width: 95%;
+  }
+
+  &:nth-child(4) {
+    width: 85%;
+  }
+`;
+
 const ArticlePage = () => {
-  const { id } = useParams();  // Captura o id da URL
+  const { id } = useParams();
   const [article, setArticle] = useState(null);
-  const [featuredImage, setFeaturedImage] = useState(null); // Para armazenar a URL da imagem de destaque
+  const [featuredImage, setFeaturedImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    window.scrollTo(0, 0); // Rola para o topo da página ao carregar
+    window.scrollTo(0, 0);
 
-    // Buscar os dados do artigo
     fetch(`https://www.saesadvogados.com.br/wp-json/wp/v2/posts/${id}`)
       .then((response) => response.json())
       .then((data) => {
         setArticle(data);
-        
-        // Buscar a imagem de destaque com base no ID de featured_media
+
         if (data.featured_media) {
           fetch(`https://www.saesadvogados.com.br/wp-json/wp/v2/media/${data.featured_media}`)
-            .then((mediaResponse) => mediaResponse.json())
-            .then((mediaData) => {
-              setFeaturedImage(mediaData.source_url); // Armazena a URL da imagem de destaque
+            .then((res) => res.json())
+            .then((img) => {
+              setFeaturedImage(img.source_url);
+              setIsLoading(false);
             })
-            .catch((error) => console.error('Erro ao carregar a imagem de destaque:', error));
+            .catch(() => setIsLoading(false));
+        } else {
+          setIsLoading(false);
         }
       })
-      .catch((error) => console.error('Erro ao carregar artigo:', error));
+      .catch((error) => {
+        console.error('Erro ao carregar artigo:', error);
+        setIsLoading(false);
+      });
   }, [id]);
-
-  if (!article) {
-    return <div>Carregando...</div>;
-  }
 
   return (
     <ArticlePageContainer>
-      {/* Imagem de Destaque */}
-      <ImageBanner bg={featuredImage} />
-
-      <ContentContainer>
-        {/* Título do Artigo */}
-        <Title>{article.title.rendered}</Title>
-
-        {/* Conteúdo do Artigo */}
-        <ArticleContent dangerouslySetInnerHTML={{ __html: article.content.rendered }} />
-
-        {/* Botão de Voltar */}
-        <BackButton onClick={() => window.history.back()}>Voltar</BackButton>
-      </ContentContainer>
+      {isLoading ? (
+        <>
+          <SkeletonImage />
+          <ContentContainer>
+            <SkeletonTitle />
+            <SkeletonText />
+            <SkeletonText />
+            <SkeletonText />
+            <SkeletonText />
+          </ContentContainer>
+        </>
+      ) : (
+        <>
+          <ImageBanner bg={featuredImage} />
+          <ContentContainer>
+            <Title>{article.title.rendered}</Title>
+            <ArticleContent dangerouslySetInnerHTML={{ __html: article.content.rendered }} />
+            <BackButton onClick={() => window.history.back()}>Voltar</BackButton>
+          </ContentContainer>
+        </>
+      )}
     </ArticlePageContainer>
   );
 };
 
 export default ArticlePage;
-

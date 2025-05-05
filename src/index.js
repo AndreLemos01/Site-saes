@@ -1,20 +1,26 @@
-import React from 'react';
+// src/index.js
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import { BrowserRouter } from 'react-router-dom'; // ✅ IMPORTANTE
 import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { BrowserRouter as Router } from 'react-router-dom';  // Importação do Router
+import { ThemeProvider } from 'styled-components';
+import { lightTheme, darkTheme } from './themes';
+import { GlobalStyle } from './styles/GlobalStyle';
+
+function Root() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const toggleTheme = () => setIsDarkMode(!isDarkMode);
+
+  return (
+    <BrowserRouter> {/* ✅ ENVOLVENDO TUDO */}
+      <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+        <GlobalStyle />
+        <App toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
+      </ThemeProvider>
+    </BrowserRouter>
+  );
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <Router>  {/* Envolvendo o App com Router */}
-      <App />
-    </Router>
-  </React.StrictMode>
-);
-
-// Se você quiser começar a medir o desempenho no seu app, passe uma função
-// para registrar os resultados (por exemplo: reportWebVitals(console.log))
-// ou envie para um ponto de análise. Saiba mais: https://bit.ly/CRA-vitals
-reportWebVitals();
+root.render(<Root />);

@@ -1,119 +1,98 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';  // Importando o Link para navegação
-import styled from 'styled-components'; // Importando styled-components para estilização
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
-// Estilizações usando styled-components
+// 🔸 Estilos
 const NoticiasSection = styled.section`
   width: 100%;
-  height: 90vh;
+  height: 100vh;
+  background-image: url(${(props) => props.$bg});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   position: relative;
   overflow: hidden;
-  background: #f4f4f4;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: 0.4s ease-out;
+  transition: background-image 1s ease-in-out;
+
+  @media (max-width: 768px) {
+    height: auto;
+    padding: 4rem 1rem;
+  }
 
   &:hover .navegacao {
     opacity: 1;
   }
 `;
 
-const Noticia = styled.div`
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  border-radius: 16px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 3rem;
-  color: black;
-  background-image: url(${(props) => props.$bg || 'https://via.placeholder.com/1600x900'});  // Usando a prop $bg
-  transition: background-image 0.8s ease-in-out;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  border-radius: 16px;
-`;
-
 const Overlay = styled.div`
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 16px;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
 `;
 
-const TextoContainer = styled.div`
+const Noticia = styled.article`
   position: relative;
-  z-index: 1;
-  width: 90%;
-  margin-left: 10%;
-  display: flex;
-  flex-direction: column;
-  transform: translateY(-40%);
+  z-index: 2;
+  max-width: 900px;
+  padding: 3rem;
+  border-radius: 16px;
+  text-align: left;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
 `;
 
 const Titulo = styled.h1`
   font-size: 2rem;
+  color: #f66b0a;
   margin-bottom: 1rem;
-  color: #f66b0a;  // Título em laranja
-  font-weight: 600;
-  letter-spacing: 1px;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
 `;
 
 const Descricao = styled.p`
   font-size: 1.1rem;
-  margin-bottom: 2rem;
   color: white;
-  font-weight: 400;
+  margin-bottom: 2rem;
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
 `;
 
+const LinkSemSublinhado = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+`;
+
 const Botao = styled.button`
-  width: 220px;
   padding: 1rem 1.5rem;
-  font-size: 1.2rem;
-  background-color: transparent;  // Fundo transparente
-  border: 2px solid #f66b0a;  // Contorno laranja
+  font-size: 1.1rem;
+  background: transparent;
+  border: 2px solid #f66b0a;
   border-radius: 8px;
-  color: #f66b0a;  // Texto em laranja
+  color: #f66b0a;
   cursor: pointer;
-  transition: 0.3s ease-in-out;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 1rem;
-  font-weight: 500;
+  transition: 0.3s;
 
   &:hover {
-    background-color: #f66b0a;  // Fundo laranja ao passar o mouse
-    color: white;  // Texto branco quando o mouse estiver em cima
-    box-shadow: 0px 5px 15px rgba(255, 105, 0, 0.3);
-  }
-
-  svg {
-    font-size: 1.6rem;
+    background: #f66b0a;
+    color: white;
   }
 `;
 
 const Navegacao = styled.div`
   position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
+  inset: 0;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   padding: 0 2rem;
   opacity: 0;
   transition: opacity 0.3s;
   pointer-events: none;
+  z-index: 3;
 
   & > button {
     pointer-events: all;
@@ -121,69 +100,86 @@ const Navegacao = styled.div`
 `;
 
 const BotaoSeta = styled.button`
-  background: transparent;  // Fundo transparente
-  border: none;
+  background: rgba(0, 0, 0, 0.4);
   color: white;
-  width: 50px;
-  height: 50px;
-  font-size: 2rem;
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: 0.3s;
-  border-radius: 50%;
-  padding: 8px;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.6);  // Leve fundo escuro ao passar o mouse
+    background: rgba(0, 0, 0, 0.7);
   }
 `;
 
 const BolinhasContainer = styled.div`
   position: absolute;
   bottom: 30px;
+  width: 100%;
   display: flex;
   justify-content: center;
-  width: 100%;
-  gap: 15px;
+  gap: 12px;
+  z-index: 3;
 `;
 
-const Bolinha = styled.div`
+const Bolinha = styled.button`
   width: 12px;
   height: 12px;
   border-radius: 50%;
   border: 2px solid #f66b0a;
-  background-color: ${(props) => (props.preenchido ? '#f66b0a' : 'transparent')};
+  background: ${(props) => (props.ativa ? '#f66b0a' : 'transparent')};
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background 0.3s;
 
   &:hover {
-    background-color: rgba(255, 105, 0, 0.7);
+    background: rgba(255, 105, 0, 0.7);
   }
 `;
 
-// Função para buscar as notícias do blog WordPress
+const SkeletonCard = styled.div`
+  width: 90%;
+  height: 400px;
+  background: #ddd;
+  border-radius: 16px;
+  animation: pulse 1.5s infinite ease-in-out;
+  z-index: 2;
+
+  @keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+  }
+`;
+
+// 🔍 Fetch de notícias
 const fetchNoticias = async () => {
   try {
     const response = await fetch('https://www.saesadvogados.com.br/wp-json/wp/v2/posts?categories=13');
     const data = await response.json();
 
     const mediaUrls = await Promise.all(data.map(async (post) => {
-      const mediaResponse = await fetch(`https://www.saesadvogados.com.br/wp-json/wp/v2/media/${post.featured_media}`);
-      const mediaData = await mediaResponse.json();
-      return mediaData.source_url;
+      if (post.featured_media) {
+        const mediaRes = await fetch(`https://www.saesadvogados.com.br/wp-json/wp/v2/media/${post.featured_media}`);
+        const mediaData = await mediaRes.json();
+        return mediaData.source_url;
+      }
+      return null;
     }));
 
     return data.map((post, index) => ({
+      id: post.id,
       titulo: post.title.rendered,
       descricao: post.excerpt.rendered.replace(/<\/?[^>]+(>|$)/g, ""),
       imagem: mediaUrls[index] || 'https://via.placeholder.com/1600x900',
-      link: post.link,
-      id: post.id // Adicionando o ID para passar para a ArticlePage
     }));
   } catch (error) {
-    console.error("Erro ao buscar notícias:", error);
+    console.error('Erro ao buscar notícias:', error);
     return [];
   }
 };
@@ -191,74 +187,70 @@ const fetchNoticias = async () => {
 function Noticias() {
   const [noticias, setNoticias] = useState([]);
   const [indexAtual, setIndexAtual] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const carregarNoticias = async () => {
-      const noticiasDoBlog = await fetchNoticias();
-      setNoticias(noticiasDoBlog);
+    const carregar = async () => {
+      const lista = await fetchNoticias();
+      setNoticias(lista);
+      setLoading(false);
     };
+    carregar();
+  }, []);
 
-    carregarNoticias();
-
-    const intervalo = setInterval(() => {
-      setIndexAtual((prevIndex) => (prevIndex + 1) % noticias.length);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndexAtual((prev) =>
+        noticias.length > 0 ? (prev + 1) % noticias.length : 0
+      );
     }, 10000);
+    return () => clearInterval(interval);
+  }, [noticias]);
 
-    return () => clearInterval(intervalo);
-  }, [noticias.length]);
-
-  const proximaNoticia = () => {
-    setIndexAtual((prevIndex) => (prevIndex + 1) % noticias.length);
+  const trocarNoticia = (i) => {
+    if (noticias.length > 0) setIndexAtual(i);
   };
 
-  const noticiaAnterior = () => {
-    setIndexAtual((prevIndex) => (prevIndex - 1 + noticias.length) % noticias.length);
-  };
-
-  const trocarNoticia = (index) => {
-    setIndexAtual(index);
-  };
+  const noticia = noticias[indexAtual];
 
   return (
-    <NoticiasSection id="inicio">
-      {noticias.length > 0 && (
-        <Noticia $bg={noticias[indexAtual].imagem}>
-          <Overlay />
-          <TextoContainer>
-            <Titulo>{noticias[indexAtual].titulo}</Titulo>
-            <Descricao>{noticias[indexAtual].descricao}</Descricao>
-            <Botao>
-              <Link to={`/article/${noticias[indexAtual].id}`} style={{ textDecoration: 'none', color: 'orange' }}> 
-                <span>+</span>
-                Saiba Mais
-              </Link>
-            </Botao>
-          </TextoContainer>
-        </Noticia>
+    <NoticiasSection id="inicio" $bg={noticia?.imagem}>
+      <Overlay />
+
+      {loading ? (
+        <SkeletonCard />
+      ) : (
+        noticia && (
+          <Noticia aria-label={`Notícia: ${noticia.titulo}`}>
+            <Titulo>{noticia.titulo}</Titulo>
+            <Descricao>{noticia.descricao}</Descricao>
+            <LinkSemSublinhado to={`/article/${noticia.id}`}>
+              <Botao>
+                <span>+</span> Saiba Mais
+              </Botao>
+            </LinkSemSublinhado>
+          </Noticia>
+        )
       )}
 
-      <Navegacao className="navegacao">
-        <BotaoSeta onClick={noticiaAnterior}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-        </BotaoSeta>
-        <BotaoSeta onClick={proximaNoticia}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-        </BotaoSeta>
-      </Navegacao>
+      {!loading && noticias.length > 0 && (
+        <>
+          <Navegacao className="navegacao">
+            <BotaoSeta onClick={() => setIndexAtual((prev) => (prev - 1 + noticias.length) % noticias.length)}>❮</BotaoSeta>
+            <BotaoSeta onClick={() => setIndexAtual((prev) => (prev + 1) % noticias.length)}>❯</BotaoSeta>
+          </Navegacao>
 
-      <BolinhasContainer>
-        {noticias.map((_, index) => (
-          <Bolinha
-            key={index}
-            preenchido={index === indexAtual}
-            onClick={() => trocarNoticia(index)} // Troca a notícia ao clicar na bolinha
-          />
-        ))}
-      </BolinhasContainer>
+          <BolinhasContainer>
+            {noticias.map((_, i) => (
+              <Bolinha
+                key={i}
+                ativa={i === indexAtual}
+                onClick={() => trocarNoticia(i)}
+              />
+            ))}
+          </BolinhasContainer>
+        </>
+      )}
     </NoticiasSection>
   );
 }

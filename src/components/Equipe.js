@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 const Section = styled.section`
@@ -15,33 +15,29 @@ const Title = styled.h2`
 
 const TeamGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 2rem;
   justify-items: center;
-`;
-
-const MemberLink = styled.a`
-  text-decoration: none;
   width: 100%;
-  max-width: 280px;
-  min-height: 340px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  cursor: pointer;
-  opacity: ${({ isHovered, isActive }) => (isHovered && !isActive ? 0.3 : 1)};
-  
-  &:hover {
-    transform: translateY(-5px);
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 `;
 
 const MemberCard = styled.div`
-  background: transparent;
-  border: none;
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
   text-align: center;
   width: 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  }
 
   img {
     border-radius: 50%;
@@ -62,46 +58,80 @@ const MemberCard = styled.div`
     color: #777;
     margin-top: 0.3rem;
   }
+
+  button {
+    margin-top: 1rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    background-color: white;
+    border: 2px solid orange;
+    border-radius: 8px;
+    color: black;
+    cursor: pointer;
+    transition: 0.3s;
+
+    &:hover {
+      background-color: orange;
+      color: white;
+    }
+  }
+`;
+
+// Skeleton card visual
+const SkeletonCard = styled.div`
+  background: #ddd;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 260px;
+  height: 300px;
+  animation: pulse 1.5s infinite ease-in-out;
+
+  @keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+  }
 `;
 
 function Equipe() {
-  const equipe = [
-    { nome: "Marcos André Bruxel Saes", cargo: "Advogado | OAB/SC 20.864", link: "#" },
-    { nome: "Gleyse Gulin", cargo: "Advogada | OAB/RJ 172.476", link: "#" },
-    { nome: "Manuela K Hermenegildo Andriani", cargo: "Advogada | OAB/SC 44.175", link: "#" },
-    { nome: "Isabella Dabrowski Pedrini Hamad", cargo: "Advogada | OAB/SC 39.232", link: "#" },
-    { nome: "Caio Henrique Bocchini", cargo: "Advogado | OAB/SC 38.517", link: "#" },
-    { nome: "Camilla Pavan Costa", cargo: "Advogada | OAB/SC 33.200", link: "#" },
-    { nome: "Eduardo dos Anjos Saes", cargo: "Advogado | OAB/SC 70.652", link: "#" },
-    { nome: "Nicole Bittencourt", cargo: "Advogada | OAB/SC 73.238", link: "#" },
-    { nome: "Luiza Neves Alcantara", cargo: "Estagiária", link: "#" },
-    { nome: "Maria Helena Lemos", cargo: "Administradora", link: "#" },
-    { nome: "Polliana Muller", cargo: "Auxiliar Administrativa", link: "#" },
-    { nome: "Ana Carolina Borduan", cargo: "Recepcionista", link: "#" }
-  ];
+  const [loading, setLoading] = useState(true);
+  const [equipe, setEquipe] = useState([]);
 
-  const [hoveredIndex, setHoveredIndex] = useState(null);
+  useEffect(() => {
+    // Simula carregamento (pode ser substituído por um fetch real)
+    setTimeout(() => {
+      setEquipe([
+        { nome: "Marcos André Bruxel Saes", cargo: "Advogado | OAB/SC 20.864" },
+        { nome: "Gleyse Gulin", cargo: "Advogada | OAB/RJ 172.476" },
+        { nome: "Manuela K Hermenegildo Andriani", cargo: "Advogada | OAB/SC 44.175" },
+        { nome: "Isabella Dabrowski Pedrini Hamad", cargo: "Advogada | OAB/SC 39.232" },
+        { nome: "Caio Henrique Bocchini", cargo: "Advogado | OAB/SC 38.517" },
+        { nome: "Camilla Pavan Costa", cargo: "Advogada | OAB/SC 33.200" },
+        { nome: "Eduardo dos Anjos Saes", cargo: "Advogado | OAB/SC 70.652" },
+        { nome: "Nicole Bittencourt", cargo: "Advogada | OAB/SC 73.238" },
+        { nome: "Luiza Neves Alcantara", cargo: "Estagiária" },
+        { nome: "Maria Helena Lemos", cargo: "Administradora" },
+        { nome: "Polliana Muller", cargo: "Auxiliar Administrativa" },
+        { nome: "Ana Carolina Borduan", cargo: "Recepcionista" }
+      ]);
+      setLoading(false);
+    }, 1500);
+  }, []);
 
   return (
     <Section>
       <Title>Equipe</Title>
       <TeamGrid>
-        {equipe.map((membro, index) => (
-          <MemberLink
-            key={index}
-            href={membro.link}
-            isHovered={hoveredIndex !== null}
-            isActive={hoveredIndex === index}
-            onMouseEnter={() => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(null)}
-          >
-            <MemberCard>
-              <img src="https://via.placeholder.com/120" alt={membro.nome} />
-              <h3>{membro.nome}</h3>
-              <p>{membro.cargo}</p>
-            </MemberCard>
-          </MemberLink>
-        ))}
+        {loading
+          ? Array.from({ length: 6 }).map((_, idx) => <SkeletonCard key={idx} />)
+          : equipe.map((membro, index) => (
+              <MemberCard key={index}>
+                <img src="https://via.placeholder.com/120" alt={membro.nome} />
+                <h3>{membro.nome}</h3>
+                <p>{membro.cargo}</p>
+                <button>Ver mais</button>
+              </MemberCard>
+            ))}
       </TeamGrid>
     </Section>
   );
