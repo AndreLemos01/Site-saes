@@ -10,6 +10,20 @@ import Newsletter from './components/Newsletter';
 import Frase from './components/Frase';
 import Selos from './components/Selos';
 
+// Páginas dos membros da equipe
+import Marcos from './equipe/Marcos';
+import Gleyse from './equipe/Gleyse';
+import Manuela from './equipe/Manuela';
+import Isabella from './equipe/Isabella';
+import Caio from './equipe/Caio';
+import Camilla from './equipe/Camilla';
+import Eduardo from './equipe/Eduardo';
+import Nicole from './equipe/Nicole';
+import Luiza from './equipe/Luiza';
+import Maria from './equipe/Maria';
+import Polliana from './equipe/Polliana';
+import Ana from './equipe/Ana';
+
 import ArticlePage from './pages/ArticlePage';
 import AdminPage from './pages/AdminPage';
 import Escritorio from './pages/Escritorio';
@@ -40,7 +54,7 @@ function App({ toggleTheme, isDarkMode }) {
       </button>
 
       <Routes>
-        {/* Página inicial com Layout */}
+        {/* Página inicial com layout e seções */}
         <Route
           path="/"
           element={
@@ -56,7 +70,7 @@ function App({ toggleTheme, isDarkMode }) {
           }
         />
 
-        {/* Demais rotas também com Layout */}
+        {/* Página de artigo */}
         <Route
           path="/article/:id"
           element={
@@ -66,6 +80,7 @@ function App({ toggleTheme, isDarkMode }) {
           }
         />
 
+        {/* Página do escritório */}
         <Route
           path="/escritorio"
           element={
@@ -75,21 +90,36 @@ function App({ toggleTheme, isDarkMode }) {
           }
         />
 
-        {/* Admin sem layout compartilhado (opcional) */}
+        {/* Páginas de perfil individual */}
+        <Route path="/marcos" element={<Layout><Marcos /></Layout>} />
+        <Route path="/gleyse" element={<Layout><Gleyse /></Layout>} />
+        <Route path="/manuela" element={<Layout><Manuela /></Layout>} />
+        <Route path="/isabella" element={<Layout><Isabella /></Layout>} />
+        <Route path="/caio" element={<Layout><Caio /></Layout>} />
+        <Route path="/camilla" element={<Layout><Camilla /></Layout>} />
+        <Route path="/eduardo" element={<Layout><Eduardo /></Layout>} />
+        <Route path="/nicole" element={<Layout><Nicole /></Layout>} />
+        <Route path="/luiza" element={<Layout><Luiza /></Layout>} />
+        <Route path="/maria" element={<Layout><Maria /></Layout>} />
+        <Route path="/polliana" element={<Layout><Polliana /></Layout>} />
+        <Route path="/ana" element={<Layout><Ana /></Layout>} />
+
+        {/* Página administrativa */}
         <Route path="/admin" element={<AdminPage />} />
       </Routes>
 
-      {/* Botão WhatsApp flutuante */}
+      {/* Botão flutuante do WhatsApp */}
       <a
         href="https://wa.me/5548996356392?text=Oi%20gostaria%20de%20tirar%20algumas%20dúvidas."
         target="_blank"
         rel="noopener noreferrer"
         style={styles.whatsappLink}
+        aria-label="Iniciar conversa no WhatsApp"
       >
         <button style={styles.whatsappButton}>
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-            alt="WhatsApp"
+            alt="Ícone do WhatsApp"
             style={styles.whatsappIcon}
           />
         </button>
@@ -126,4 +156,3 @@ const styles = {
 };
 
 export default App;
-

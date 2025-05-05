@@ -1,7 +1,8 @@
 // src/pages/Atuacao.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Cards from '../components/Cards';
+import { useSpring, animated } from 'react-spring';
 
 const Section = styled.section`
   padding: 4rem 10%;
@@ -54,10 +55,8 @@ const TabContent = styled.div`
 const LeftSide = styled.div`
   flex: 1;
   background-color: white;
-  color: orange;
   padding: 2rem;
   text-align: center;
-  font-size: 10rem;
 `;
 
 const RightSide = styled.div`
@@ -84,7 +83,7 @@ function Atuacao() {
   const tabs = [
     {
       title: 'Presença',
-      leftContent: '[20]',
+      leftContent: 20,
       rightContent: (
         <>
           <h3>Estados do país</h3>
@@ -94,7 +93,7 @@ function Atuacao() {
     },
     {
       title: 'Licenciamento',
-      leftContent: '[50]',
+      leftContent: 50,
       rightContent: (
         <>
           <h3>Empreendimentos</h3>
@@ -104,7 +103,7 @@ function Atuacao() {
     },
     {
       title: 'Conflitos Ambientais',
-      leftContent: '[250]',
+      leftContent: 250,
       rightContent: (
         <>
           <h3>Causas ambientais</h3>
@@ -114,13 +113,24 @@ function Atuacao() {
     }
   ];
 
+  const animatedNumber = useSpring({
+    from: { number: 0 },
+    to: { number: tabs[activeTab].leftContent },
+    reset: true,
+    config: { duration: 1000 },
+  });
+
   return (
     <Section>
       <Title>Atuação</Title>
       <Cards />
 
       <TabContent>
-        <LeftSide>{tabs[activeTab].leftContent}</LeftSide>
+        <LeftSide>
+          <animated.div style={{ fontSize: '10rem', color: 'orange', fontWeight: 'bold' }}>
+            {animatedNumber.number.to(n => `[${Math.floor(n)}]`)}
+          </animated.div>
+        </LeftSide>
         <RightSide>{tabs[activeTab].rightContent}</RightSide>
       </TabContent>
 

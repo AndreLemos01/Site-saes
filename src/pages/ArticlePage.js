@@ -132,6 +132,7 @@ const ArticlePage = () => {
       .then((data) => {
         setArticle(data);
 
+        // Verifique se featured_media existe antes de fazer o fetch da imagem
         if (data.featured_media) {
           fetch(`https://www.saesadvogados.com.br/wp-json/wp/v2/media/${data.featured_media}`)
             .then((res) => res.json())
@@ -150,6 +151,11 @@ const ArticlePage = () => {
       });
   }, [id]);
 
+  // Verifique se o artigo está disponível antes de renderizar
+  if (!article) {
+    return <div>Artigo não encontrado.</div>;
+  }
+
   return (
     <ArticlePageContainer>
       {isLoading ? (
@@ -167,8 +173,8 @@ const ArticlePage = () => {
         <>
           <ImageBanner bg={featuredImage} />
           <ContentContainer>
-            <Title>{article.title.rendered}</Title>
-            <ArticleContent dangerouslySetInnerHTML={{ __html: article.content.rendered }} />
+            <Title>{article.title?.rendered || 'Título não disponível'}</Title>
+            <ArticleContent dangerouslySetInnerHTML={{ __html: article.content?.rendered || 'Conteúdo não disponível' }} />
             <BackButton onClick={() => window.history.back()}>Voltar</BackButton>
           </ContentContainer>
         </>

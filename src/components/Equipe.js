@@ -1,137 +1,122 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+
+import marcos from '../images/marcos.jpg';
+import gleyse from '../images/gleyse.jpg';
+import manuela from '../images/manuela.jpg';
+import isabella from '../images/isabella.jpg';
+import caio from '../images/caio.jpg';
+import camilla from '../images/camilla.jpg';
+import eduardo from '../images/eduardo.jpg';
+import nicole from '../images/nicole.png';
+import luiza from '../images/luiza.png';
+import maria from '../images/maria.jpg';
+import polliana from '../images/polliana.png';
+import ana from '../images/ana.jpg';
 
 const Section = styled.section`
   padding: 4rem 10%;
-  background-color: white;
+  background-color: #fff;
 `;
 
 const Title = styled.h2`
   text-align: center;
-  font-size: 2.8rem;
-  color: #333;
+  font-size: 2.4rem;
+  color: #222;
   margin-bottom: 3rem;
+  font-weight: 600;
 `;
 
 const TeamGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 2rem;
   justify-items: center;
-  width: 100%;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
   }
 `;
 
 const MemberCard = styled.div`
-  background: white;
-  border-radius: 12px;
-  padding: 1rem;
   text-align: center;
   width: 100%;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.3s ease;
+  max-width: 260px;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: ${(props) => (props.isHovered ? 0.4 : 1)}; /* Os outros cards ficam opacos */
 
   &:hover {
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    opacity: 1; /* Remove a opacidade do card que está sendo hoverado */
+    transform: scale(1.05); /* Efeito de zoom */
   }
 
   img {
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
+    width: 100%;
+    height: 290px;
     object-fit: cover;
+    object-position: top;
+    border-radius: 12px;
     margin-bottom: 1rem;
   }
 
   h3 {
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: #111;
-    margin-top: 0.5rem;
+    margin: 0.3rem 0 0.2rem;
+    font-weight: 600;
   }
 
   p {
-    font-size: 1rem;
-    color: #777;
-    margin-top: 0.3rem;
-  }
-
-  button {
-    margin-top: 1rem;
-    padding: 0.6rem 1.2rem;
     font-size: 0.9rem;
-    background-color: white;
-    border: 2px solid orange;
-    border-radius: 8px;
-    color: black;
-    cursor: pointer;
-    transition: 0.3s;
-
-    &:hover {
-      background-color: orange;
-      color: white;
-    }
+    color: #666;
+    margin: 0;
   }
-`;
 
-// Skeleton card visual
-const SkeletonCard = styled.div`
-  background: #ddd;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 260px;
-  height: 300px;
-  animation: pulse 1.5s infinite ease-in-out;
-
-  @keyframes pulse {
-    0% { opacity: 0.6; }
-    50% { opacity: 1; }
-    100% { opacity: 0.6; }
+  a {
+    text-decoration: none; /* Remove sublinhado do link */
+    color: inherit; /* Garante que a cor do texto será herdada */
   }
 `;
 
 function Equipe() {
-  const [loading, setLoading] = useState(true);
-  const [equipe, setEquipe] = useState([]);
+  const [hoveredCard, setHoveredCard] = useState(null); // Estado para controlar o card hoverado
 
-  useEffect(() => {
-    // Simula carregamento (pode ser substituído por um fetch real)
-    setTimeout(() => {
-      setEquipe([
-        { nome: "Marcos André Bruxel Saes", cargo: "Advogado | OAB/SC 20.864" },
-        { nome: "Gleyse Gulin", cargo: "Advogada | OAB/RJ 172.476" },
-        { nome: "Manuela K Hermenegildo Andriani", cargo: "Advogada | OAB/SC 44.175" },
-        { nome: "Isabella Dabrowski Pedrini Hamad", cargo: "Advogada | OAB/SC 39.232" },
-        { nome: "Caio Henrique Bocchini", cargo: "Advogado | OAB/SC 38.517" },
-        { nome: "Camilla Pavan Costa", cargo: "Advogada | OAB/SC 33.200" },
-        { nome: "Eduardo dos Anjos Saes", cargo: "Advogado | OAB/SC 70.652" },
-        { nome: "Nicole Bittencourt", cargo: "Advogada | OAB/SC 73.238" },
-        { nome: "Luiza Neves Alcantara", cargo: "Estagiária" },
-        { nome: "Maria Helena Lemos", cargo: "Administradora" },
-        { nome: "Polliana Muller", cargo: "Auxiliar Administrativa" },
-        { nome: "Ana Carolina Borduan", cargo: "Recepcionista" }
-      ]);
-      setLoading(false);
-    }, 1500);
-  }, []);
+  const equipe = [
+    { nome: 'Marcos André Bruxel Saes', cargo: 'Advogado | OAB/SC 20.864', foto: marcos, link: '/marcos' },
+    { nome: 'Gleyse Gulin', cargo: 'Advogada | OAB/RJ 172.476', foto: gleyse, link: '/gleyse' },
+    { nome: 'Manuela K Hermenegildo Andriani', cargo: 'Advogada | OAB/SC 44.175', foto: manuela, link: '/manuela' },
+    { nome: 'Isabella Dabrowski Pedrini Hamad', cargo: 'Advogada | OAB/SC 39.232', foto: isabella, link: '/isabella' },
+    { nome: 'Caio Henrique Bocchini', cargo: 'Advogado | OAB/SC 38.517', foto: caio, link: '/caio' },
+    { nome: 'Camilla Pavan Costa', cargo: 'Advogada | OAB/SC 33.200', foto: camilla, link: '/camilla' },
+    { nome: 'Eduardo dos Anjos Saes', cargo: 'Advogado | OAB/SC 70.652', foto: eduardo, link: '/eduardo' },
+    { nome: 'Nicole Bittencourt', cargo: 'Advogada | OAB/SC 73.238', foto: nicole, link: '/nicole' },
+    { nome: 'Luiza Neves Alcantara', cargo: 'Estagiária', foto: luiza, link: '/luiza' },
+    { nome: 'Maria Helena Lemos', cargo: 'Administradora', foto: maria, link: '/maria' },
+    { nome: 'Polliana Muller', cargo: 'Auxiliar Administrativa', foto: polliana, link: '/polliana' },
+    { nome: 'Ana Carolina Borduan', cargo: 'Recepcionista', foto: ana, link: '/ana' },
+  ];
 
   return (
     <Section>
       <Title>Equipe</Title>
       <TeamGrid>
-        {loading
-          ? Array.from({ length: 6 }).map((_, idx) => <SkeletonCard key={idx} />)
-          : equipe.map((membro, index) => (
-              <MemberCard key={index}>
-                <img src="https://via.placeholder.com/120" alt={membro.nome} />
-                <h3>{membro.nome}</h3>
-                <p>{membro.cargo}</p>
-                <button>Ver mais</button>
-              </MemberCard>
-            ))}
+        {equipe.map((membro, index) => (
+          <MemberCard
+            key={index}
+            isHovered={hoveredCard !== null && hoveredCard !== index} // Verifica se o card não está sendo hoverado
+            onMouseEnter={() => setHoveredCard(index)} // Quando o mouse entra, seta o card como hoverado
+            onMouseLeave={() => setHoveredCard(null)} // Quando o mouse sai, limpa o hover
+          >
+            <Link to={membro.link}>
+              <img src={membro.foto} alt={membro.nome} />
+              <h3>{membro.nome}</h3>
+              <p>{membro.cargo}</p>
+            </Link>
+          </MemberCard>
+        ))}
       </TeamGrid>
     </Section>
   );
