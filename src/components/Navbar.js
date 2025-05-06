@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useNavigate, useLocation, Link } from 'react-router-dom'; // Adicionei o Link para navegação
 import image from '../images/logo-saes.png';
 
-// Container geral do topo fixo
 const TopBar = styled.div`
   position: fixed;
   top: 0;
@@ -28,7 +27,7 @@ const LogoContainer = styled.div`
 const Logo = styled.img`
   max-width: 90px;
   height: auto;
-  cursor: pointer; /* Adiciona o cursor pointer para indicar que o logo é clicável */
+  cursor: pointer;
 `;
 
 const NavbarContainer = styled.div`
@@ -110,6 +109,7 @@ const SearchIcon = styled.svg`
   fill: white;
   position: absolute;
   right: 10px;
+  cursor: pointer; /* Lupa é clicável */
 `;
 
 const SearchBarUnderline = styled.div`
@@ -121,78 +121,63 @@ const SearchBarUnderline = styled.div`
   background-color: #f90;
 `;
 
-const HeaderSpacer = styled.div`
-  height: 170px;
-`;
-
-function Header() {
+function NavbarComponent() {
   const navigate = useNavigate();
-  const location = useLocation();
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const handleNavigation = (sectionId) => {
-    if (location.pathname !== '/') {
-      navigate('/');
-      setTimeout(() => {
-        scrollToSection(sectionId);
-      }, 100);
-    } else {
-      scrollToSection(sectionId);
-    }
-  };
-
-  const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      const topOffset = 160; // Ajuste para a altura da sua TopBar
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - topOffset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth',
-      });
+  // Função de navegação para pesquisa
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/search?query=${searchQuery}`); // Navega para a página de resultados de pesquisa
     }
   };
 
   return (
-    <>
-      <TopBar>
-        <LogoContainer>
-          <Link to="/"> {/* Tornando o logo clicável para voltar à página inicial */}
-            <Logo src={image} alt="Logo" />
-          </Link>
-        </LogoContainer>
+    <TopBar>
+      <LogoContainer>
+        <a href="/">
+          <Logo src={image} alt="Logo" />
+        </a>
+      </LogoContainer>
 
-        <NavbarContainer>
-          <Navbar>
-            <NavbarList>
-              <NavbarItem><NavbarLink as="button" onClick={() => handleNavigation('noticias')}>Início</NavbarLink></NavbarItem>
-              <NavbarItem><NavbarLink as="button" onClick={() => handleNavigation('quem-somos')}>Quem Somos</NavbarLink></NavbarItem>
-              <NavbarItem><NavbarLink as="button" onClick={() => handleNavigation('atuacao')}>Atuação</NavbarLink></NavbarItem>
-              <NavbarItem><NavbarLink as="button" onClick={() => handleNavigation('equipe')}>Equipe</NavbarLink></NavbarItem>
-              <NavbarItem><NavbarLink as="button" onClick={() => handleNavigation('newsletter')}>Contato</NavbarLink></NavbarItem>
-              <NavbarItem><NavbarLink href="/newsletter">Newsletter</NavbarLink></NavbarItem>
-              <NavbarItem><NavbarLink href="/publicacoes">Publicações</NavbarLink></NavbarItem>
-              <NavbarItem><NavbarLink href="/artigos">Artigos</NavbarLink></NavbarItem>
-              <NavbarItem><NavbarLink href="/novidades-legislativas">Novidades Legislativas</NavbarLink></NavbarItem>
-              <NavbarItem><NavbarLink href="/informativos">Informativos</NavbarLink></NavbarItem>
-            </NavbarList>
+      <NavbarContainer>
+        <Navbar>
+          <NavbarList>
+            {/* Seus itens de navegação */}
+            <NavbarItem><NavbarLink href="#noticias">Início</NavbarLink></NavbarItem>
+            <NavbarItem><NavbarLink href="#quem-somos">Quem Somos</NavbarLink></NavbarItem>
+            <NavbarItem><NavbarLink href="#atuacao">Atuação</NavbarLink></NavbarItem>
+            <NavbarItem><NavbarLink href="#equipe">Equipe</NavbarLink></NavbarItem>
+            <NavbarItem><NavbarLink href="#newsletter">Contato</NavbarLink></NavbarItem>
+            <NavbarItem><NavbarLink href="/newsletter">Newsletter</NavbarLink></NavbarItem>
+            <NavbarItem><NavbarLink href="/publicacoes">Publicações</NavbarLink></NavbarItem>
+            <NavbarItem><NavbarLink href="/artigos">Artigos</NavbarLink></NavbarItem>
+            <NavbarItem><NavbarLink href="/novidades-legislativas">Novidades Legislativas</NavbarLink></NavbarItem>
+            <NavbarItem><NavbarLink href="/informativos">Informativos</NavbarLink></NavbarItem>
+          </NavbarList>
 
-            <SearchContainer>
-              <SearchInput type="text" placeholder="Pesquisar..." />
-              <SearchIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8" />
-                <line x1="16" y1="16" x2="22" y2="22" />
-              </SearchIcon>
-              <SearchBarUnderline />
-            </SearchContainer>
-          </Navbar>
-        </NavbarContainer>
-      </TopBar>
-
-      <HeaderSpacer />
-    </>
+          <SearchContainer>
+            <SearchInput
+              type="text"
+              placeholder="Pesquisar..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()} // Pesquisa ao pressionar Enter
+            />
+            <SearchIcon
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              onClick={handleSearch} // Pesquisa ao clicar na lupa
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="16" y1="16" x2="22" y2="22" />
+            </SearchIcon>
+            <SearchBarUnderline />
+          </SearchContainer>
+        </Navbar>
+      </NavbarContainer>
+    </TopBar>
   );
 }
 
-export default Header;
+export default NavbarComponent;

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FaLinkedin, FaTwitter, FaInstagram, FaFacebookF } from 'react-icons/fa';
+import { animateScroll as scroll } from 'react-scroll';
+import SaesLogo from '../images/saes_marca_principal_negativa2.png'; // Importa a imagem
 
 const FooterWrapper = styled.footer.attrs(() => ({ id: "contato" }))`
   background-color: rgb(65, 64, 66);
@@ -140,10 +142,19 @@ const AddressBlock = styled.address`
 `;
 
 const FooterText = styled.p`
-  margin-top: 3rem;
+  margin-top: 2rem;
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.5);
   text-align: center;
+`;
+
+const FooterLogo = styled.img`
+  display: block;
+  margin: 3rem auto 1rem auto;
+  max-width: 200px;
+  height: auto;
+  opacity: 0.85;
+  cursor: pointer;
 `;
 
 function Footer() {
@@ -179,10 +190,13 @@ function Footer() {
     }
   }, [categoryID]);
 
+  const scrollToTop = () => {
+    scroll.scrollToTop({ duration: 600, smooth: true });
+  };
+
   return (
     <FooterWrapper>
       <FooterContent>
-        {/* Saes Navegação */}
         <FooterSection>
           <FooterTitle>Saes</FooterTitle>
           <FooterList>
@@ -199,7 +213,6 @@ function Footer() {
           </FooterList>
         </FooterSection>
 
-        {/* Artigos Recentes */}
         <FooterSection>
           <FooterTitle>Blog</FooterTitle>
           <FooterList>
@@ -215,7 +228,6 @@ function Footer() {
           </FooterList>
         </FooterSection>
 
-        {/* Contato */}
         <FooterSection>
           <FooterTitle>Entre em contato</FooterTitle>
           <p><strong>Email:</strong> <ExternalLink href="mailto:contato@saesadvogados.com.br">contato@saesadvogados.com.br</ExternalLink></p>
@@ -226,22 +238,17 @@ function Footer() {
             <p><strong>São Paulo:</strong><br />Av. Eng. Luiz Carlos Berrini, 105, Thera Office Berrini, Cj 1902, Cidade Monções<br />Tel: (11) 3539-9036</p>
           </AddressBlock>
           <SocialLinks>
-            <SocialIcon href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
-              <FaLinkedin />
-            </SocialIcon>
-            <SocialIcon href="https://twitter.com" target="_blank" aria-label="Twitter">
-              <FaTwitter />
-            </SocialIcon>
-            <SocialIcon href="https://instagram.com" target="_blank" aria-label="Instagram">
-              <FaInstagram />
-            </SocialIcon>
-            <SocialIcon href="https://facebook.com" target="_blank" aria-label="Facebook">
-              <FaFacebookF />
-            </SocialIcon>
+            <SocialIcon href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><FaLinkedin /></SocialIcon>
+            <SocialIcon href="https://twitter.com" target="_blank" aria-label="Twitter"><FaTwitter /></SocialIcon>
+            <SocialIcon href="https://instagram.com" target="_blank" aria-label="Instagram"><FaInstagram /></SocialIcon>
+            <SocialIcon href="https://facebook.com" target="_blank" aria-label="Facebook"><FaFacebookF /></SocialIcon>
           </SocialLinks>
         </FooterSection>
       </FooterContent>
 
+      <div onClick={scrollToTop}>
+        <FooterLogo src={SaesLogo} alt="Logo SAES Advogados" />
+      </div>
       <FooterText>© 2025 SAES ADVOGADOS. Todos os direitos reservados.</FooterText>
     </FooterWrapper>
   );
