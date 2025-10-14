@@ -1,5 +1,7 @@
+// src/components/Navbar.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom'; // Link para rotas de página
+import { Link as ScrollLink } from 'react-scroll'; // Link para âncoras internas com scroll suave
 import styled from 'styled-components';
 import image from '../images/logo-saes.png';
 
@@ -15,7 +17,8 @@ const TopBar = styled.div`
 `;
 
 const LogoContainer = styled.div`
-  background: rgba(255, 255, 255, 0.8);
+  // Usando theme.card com opacidade para fundo "frosted"
+  background: ${({ theme }) => theme.card}cc; 
   backdrop-filter: blur(10px);
   width: 100%;
   display: flex;
@@ -36,8 +39,9 @@ const NavbarContainer = styled.div`
   justify-content: center;
 `;
 
-const Navbar = styled.nav`
-  background-color: rgba(0, 0, 0, 0.6);
+const NavbarWrapper = styled.nav`
+  // Usando theme.card com opacidade para o navbar
+  background-color: ${({ theme }) => theme.card}a0;
   backdrop-filter: blur(10px);
   width: 80%;
   padding: 0.5rem;
@@ -57,25 +61,48 @@ const NavbarList = styled.ul`
 `;
 
 const NavbarItem = styled.li`
-  color: white;
   font-size: 0.9rem;
   margin: 0 5px;
 `;
 
-const NavbarLink = styled.a`
+// Estilo base para links (usado tanto por RouterLink quanto por ScrollLink)
+const LinkStyle = styled.span`
   text-decoration: none;
-  color: white;
+  color: ${({ theme }) => theme.text};
   padding: 0.3rem 0.6rem;
   border-radius: 5px;
   transition: all 0.3s ease;
   background: none;
   border: none;
   cursor: pointer;
+  display: block;
 
   &:hover {
-    border-bottom: 2px solid #f90;
+    border-bottom: 2px solid ${({ theme }) => theme.primary}; 
+    transform: translateY(-1px);
   }
 `;
+
+// Componente para links de roteamento (páginas)
+const NavbarRouterLink = ({ to, children }) => (
+  <RouterLink to={to} style={{ textDecoration: 'none' }}>
+    <LinkStyle>{children}</LinkStyle>
+  </RouterLink>
+);
+
+// Componente para links de scroll (âncoras)
+const NavbarScrollLink = ({ to, children }) => (
+  <ScrollLink 
+    to={to} 
+    spy={true} 
+    smooth={true} 
+    offset={-100} // Ajuste para o offset fixo da barra de navegação
+    duration={500}
+  >
+    <LinkStyle>{children}</LinkStyle>
+  </ScrollLink>
+);
+
 
 const SearchContainer = styled.div`
   display: flex;
@@ -83,7 +110,8 @@ const SearchContainer = styled.div`
   position: relative;
   width: 200px;
   border-radius: 8px;
-  background-color: #444;
+  // Usando cor de borda/card mais escura do tema
+  background-color: ${({ theme }) => theme.border}; 
   padding: 0.5rem;
 `;
 
@@ -96,20 +124,24 @@ const SearchInput = styled.input`
   height: 15px;
   width: 85%;
   background-color: transparent;
-  color: white;
+  color: ${({ theme }) => theme.text}; 
 
   &::placeholder {
-    color: white;
+    color: ${({ theme }) => theme.text}80; // Placeholder com opacidade
   }
 `;
 
 const SearchIcon = styled.svg`
   width: 20px;
   height: 20px;
-  fill: white;
+  fill: ${({ theme }) => theme.text}; 
   position: absolute;
   right: 10px;
-  cursor: pointer; /* Lupa é clicável */
+  cursor: pointer;
+  
+  &:hover {
+      fill: ${({ theme }) => theme.primary};
+  }
 `;
 
 const SearchBarUnderline = styled.div`
@@ -118,42 +150,45 @@ const SearchBarUnderline = styled.div`
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #f90;
+  background-color: ${({ theme }) => theme.primary}; 
 `;
 
 function NavbarComponent() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Função de navegação para pesquisa
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      navigate(`/search?query=${searchQuery}`); // Navega para a página de resultados de pesquisa
+      // Uso de encodeURIComponent para URL segura
+      navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
   return (
     <TopBar>
       <LogoContainer>
-        <a href="/">
-          <Logo src={image} alt="Logo" />
-        </a>
+        {/* Uso de RouterLink para a home */}
+        <RouterLink to="/"> 
+          <Logo src={image} alt="Logo SAES Advogados, Voltar para a página inicial" />
+        </RouterLink>
       </LogoContainer>
 
       <NavbarContainer>
-        <Navbar>
+        <NavbarWrapper>
           <NavbarList>
-            {/* Seus itens de navegação */}
-            <NavbarItem><NavbarLink href="#noticias">Início</NavbarLink></NavbarItem>
-            <NavbarItem><NavbarLink href="#quem-somos">Quem Somos</NavbarLink></NavbarItem>
-            <NavbarItem><NavbarLink href="#atuacao">Atuação</NavbarLink></NavbarItem>
-            <NavbarItem><NavbarLink href="#equipe">Equipe</NavbarLink></NavbarItem>
-            <NavbarItem><NavbarLink href="#newsletter">Contato</NavbarLink></NavbarItem>
-            <NavbarItem><NavbarLink href="/newsletter">Newsletter</NavbarLink></NavbarItem>
-            <NavbarItem><NavbarLink href="/publicacoes">Publicações</NavbarLink></NavbarItem>
-            <NavbarItem><NavbarLink href="/artigos">Artigos</NavbarLink></NavbarItem>
-            <NavbarItem><NavbarLink href="/novidades-legislativas">Novidades Legislativas</NavbarLink></NavbarItem>
-            <NavbarItem><NavbarLink href="/informativos">Informativos</NavbarLink></NavbarItem>
+            {/* Links de Seção (Scroll Suave) - Usar NavbarScrollLink e 'to' com ID da seção */}
+            <NavbarItem><NavbarScrollLink to="noticias">Início</NavbarScrollLink></NavbarItem>
+            <NavbarItem><NavbarScrollLink to="quem-somos">Quem Somos</NavbarScrollLink></NavbarItem>
+            <NavbarItem><NavbarScrollLink to="atuacao">Atuação</NavbarScrollLink></NavbarItem>
+            <NavbarItem><NavbarScrollLink to="equipe">Equipe</NavbarScrollLink></NavbarItem>
+            <NavbarItem><NavbarScrollLink to="newsletter">Contato</NavbarScrollLink></NavbarItem>
+            
+            {/* Links de Páginas (Router) - Usar NavbarRouterLink e 'to' com a ROTA */}
+            <NavbarItem><NavbarRouterLink to="/escritorio">Escritório</NavbarRouterLink></NavbarItem> 
+            <NavbarItem><NavbarRouterLink to="/publicacoes">Publicações</NavbarRouterLink></NavbarItem>
+            <NavbarItem><NavbarRouterLink to="/artigos">Artigos</NavbarRouterLink></NavbarItem>
+            <NavbarItem><NavbarRouterLink to="/novidades-legislativas">Novidades Legislativas</NavbarRouterLink></NavbarItem>
+            <NavbarItem><NavbarRouterLink to="/informativos">Informativos</NavbarRouterLink></NavbarItem>
           </NavbarList>
 
           <SearchContainer>
@@ -162,19 +197,21 @@ function NavbarComponent() {
               placeholder="Pesquisar..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSearch()} // Pesquisa ao pressionar Enter
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              aria-label="Campo de pesquisa do site"
             />
             <SearchIcon
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
-              onClick={handleSearch} // Pesquisa ao clicar na lupa
+              onClick={handleSearch}
+              role="button"
+              aria-label="Buscar"
             >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="16" y1="16" x2="22" y2="22" />
+              <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
             </SearchIcon>
             <SearchBarUnderline />
           </SearchContainer>
-        </Navbar>
+        </NavbarWrapper>
       </NavbarContainer>
     </TopBar>
   );

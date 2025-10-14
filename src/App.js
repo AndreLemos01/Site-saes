@@ -1,7 +1,8 @@
+// src/App.js
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import Layout from './components/Layout'; // Certifique-se de que a importação está correta
+import Layout from './components/Layout'; 
 import Noticias from './components/Noticias';
 import QuemSomos from './components/QuemSomos';
 import Atuacao from './components/Atuacao';
@@ -9,34 +10,27 @@ import Equipe from './components/Equipe';
 import Newsletter from './components/Newsletter';
 import Frase from './components/Frase';
 import Selos from './components/Selos';
+import ThemeToggle from './components/ThemeToggle'; // NOVO: Import do ThemeToggle
 
 import ArticlePage from './pages/ArticlePage';
 import AdminPage from './pages/AdminPage';
 import Escritorio from './pages/Escritorio';
+import Resultados from './pages/Resultados'; // NOVO: Import para a página de busca
 
 import './App.css';
 import './index.css';
 
+// Componentes Mock para rotas de navegação que não foram fornecidas (a ser substituído por conteúdo real)
+const PublicacoesPage = () => <Layout><h2>Publicações</h2><p>Conteúdo em desenvolvimento.</p></Layout>;
+const ArtigosPage = () => <Layout><h2>Artigos</h2><p>Conteúdo em desenvolvimento.</p></Layout>;
+const NovidadesPage = () => <Layout><h2>Novidades Legislativas</h2><p>Conteúdo em desenvolvimento.</p></Layout>;
+const InformativosPage = () => <Layout><h2>Informativos</h2><p>Conteúdo em desenvolvimento.</p></Layout>;
+const NewsletterPage = () => <Layout><Newsletter /></Layout>; // Envolve o componente Newsletter na rota
+
 function App({ toggleTheme, isDarkMode }) {
   return (
     <>
-      <button
-        onClick={toggleTheme}
-        style={{
-          position: 'fixed',
-          top: '20px',
-          right: '20px',
-          background: 'transparent',
-          border: '2px solid orange',
-          borderRadius: '8px',
-          padding: '0.5rem 1rem',
-          color: 'orange',
-          cursor: 'pointer',
-          zIndex: 1000
-        }}
-      >
-        {isDarkMode ? 'Modo Claro' : 'Modo Escuro'}
-      </button>
+      <ThemeToggle toggleTheme={toggleTheme} isDarkMode={isDarkMode} /> 
 
       <Routes>
         <Route
@@ -70,6 +64,21 @@ function App({ toggleTheme, isDarkMode }) {
           }
         />
         <Route path="/admin" element={<AdminPage />} />
+
+        {/* ROTAS ADICIONADAS PARA O FUNCIONAMENTO DA NAVBAR */}
+        <Route 
+          path="/search" 
+          element={
+            <Layout>
+              <Resultados />
+            </Layout>
+          } 
+        />
+        <Route path="/newsletter" element={<NewsletterPage />} />
+        <Route path="/publicacoes" element={<PublicacoesPage />} />
+        <Route path="/artigos" element={<ArtigosPage />} />
+        <Route path="/novidades-legislativas" element={<NovidadesPage />} />
+        <Route path="/informativos" element={<InformativosPage />} />
       </Routes>
     </>
   );
