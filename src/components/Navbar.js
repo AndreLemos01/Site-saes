@@ -1,9 +1,13 @@
 // src/components/Navbar.js
+
 import React, { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom'; // Link para rotas de página
-import { Link as ScrollLink } from 'react-scroll'; // Link para âncoras internas com scroll suave
+import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
+import { Link as ScrollLink, scroller } from 'react-scroll';
 import styled from 'styled-components';
-import image from '../images/logo-saes.png';
+import image from '../images/logo-saes.png'; 
+
+// ATENÇÃO: MANTENHA SUAS DEFINIÇÕES DE STYLED COMPONENTS AQUI INTACTAS.
+// ESTOU REAPLICANDO OS STYLES ANTERIORES APENAS PARA ESTRUTURA.
 
 const TopBar = styled.div`
   position: fixed;
@@ -17,7 +21,6 @@ const TopBar = styled.div`
 `;
 
 const LogoContainer = styled.div`
-  // Usando theme.card com opacidade para fundo "frosted"
   background: ${({ theme }) => theme.card}cc; 
   backdrop-filter: blur(10px);
   width: 100%;
@@ -40,7 +43,6 @@ const NavbarContainer = styled.div`
 `;
 
 const NavbarWrapper = styled.nav`
-  // Usando theme.card com opacidade para o navbar
   background-color: ${({ theme }) => theme.card}a0;
   backdrop-filter: blur(10px);
   width: 80%;
@@ -65,7 +67,6 @@ const NavbarItem = styled.li`
   margin: 0 5px;
 `;
 
-// Estilo base para links (usado tanto por RouterLink quanto por ScrollLink)
 const LinkStyle = styled.span`
   text-decoration: none;
   color: ${({ theme }) => theme.text};
@@ -83,25 +84,48 @@ const LinkStyle = styled.span`
   }
 `;
 
-// Componente para links de roteamento (páginas)
 const NavbarRouterLink = ({ to, children }) => (
   <RouterLink to={to} style={{ textDecoration: 'none' }}>
     <LinkStyle>{children}</LinkStyle>
   </RouterLink>
 );
 
-// Componente para links de scroll (âncoras)
-const NavbarScrollLink = ({ to, children }) => (
-  <ScrollLink 
-    to={to} 
-    spy={true} 
-    smooth={true} 
-    offset={-100} // Ajuste para o offset fixo da barra de navegação
-    duration={500}
-  >
-    <LinkStyle>{children}</LinkStyle>
-  </ScrollLink>
-);
+// Componente para links de scroll (âncoras) com lógica condicional
+const NavbarScrollLink = ({ to, children }) => {
+    const { pathname } = useLocation();
+    const navigate = useNavigate();
+    const isHomePage = pathname === '/';
+
+    // Se estiver na Home, usa o ScrollLink para o scroll suave.
+    if (isHomePage) {
+        return (
+            <ScrollLink 
+                to={to} 
+                spy={true} 
+                smooth={true} 
+                offset={-100} 
+                duration={500}
+            >
+                <LinkStyle>{children}</LinkStyle>
+            </ScrollLink>
+        );
+    } 
+    
+    // Se NÃO estiver na Home, usa RouterLink para navegar para a Home e rolar
+    const handleNavigation = () => {
+        navigate(`/#${to}`);
+        // Tenta rolar após a navegação (se a navegação for muito rápida)
+        setTimeout(() => {
+            scroller.scrollTo(to, { smooth: true, offset: -100, duration: 500 });
+        }, 100); 
+    };
+
+    return (
+        <LinkStyle onClick={handleNavigation}>
+            {children}
+        </LinkStyle>
+    );
+};
 
 
 const SearchContainer = styled.div`
@@ -110,7 +134,6 @@ const SearchContainer = styled.div`
   position: relative;
   width: 200px;
   border-radius: 8px;
-  // Usando cor de borda/card mais escura do tema
   background-color: ${({ theme }) => theme.border}; 
   padding: 0.5rem;
 `;
@@ -127,7 +150,7 @@ const SearchInput = styled.input`
   color: ${({ theme }) => theme.text}; 
 
   &::placeholder {
-    color: ${({ theme }) => theme.text}80; // Placeholder com opacidade
+    color: ${({ theme }) => theme.text}80; 
   }
 `;
 
@@ -140,7 +163,7 @@ const SearchIcon = styled.svg`
   cursor: pointer;
   
   &:hover {
-      fill: ${({ theme }) => theme.primary};
+    fill: ${({ theme }) => theme.primary};
   }
 `;
 
@@ -159,15 +182,47 @@ function NavbarComponent() {
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      // Uso de encodeURIComponent para URL segura
       navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  // LISTA DE LINKS CORRIGIDA: O item 'Contato' agora é um link de SCROLL para o Footer.
+  const menuItems = [
+    { type: 'scroll', title: 'Início', path: 'noticias' },
+    { type: 'scroll', title: 'Quem Somos', path: 'quem-somos' },
+    { type: 'scroll', title: 'Atuação', path: 'atuacao' },
+    { type: 'scroll', title: 'Equipe', path: 'equipe' },
+    { type: 'router', title: 'Newsletter', path: '/newsletter' }, 
+    
+    // Links de Páginas (Router)
+    { type: 'router', title: 'Publicações', path: '/publicacoes' }, 
+    { type: 'router', title: 'Artigos', path: '/artigos' },
+    { type: 'router', title: 'Novidades Legislativas', path: '/novidades-legislativas' },
+    { type: 'router', title: 'Informativos', path: '/informativos' },
+    
+    // MODIFICADO: Contato agora é um link de Scroll para o ID="contato" do Footer.
+    { type: 'scroll', title: 'Contato', path: 'contato' }, 
+  ];
+
+  const renderLink = (item) => {
+    if (item.type === 'scroll') {
+      return (
+        <NavbarScrollLink to={item.path}>
+          {item.title}
+        </NavbarScrollLink>
+      );
+    } else {
+      return (
+        <NavbarRouterLink to={item.path}>
+          {item.title}
+        </NavbarRouterLink>
+      );
     }
   };
 
   return (
     <TopBar>
       <LogoContainer>
-        {/* Uso de RouterLink para a home */}
         <RouterLink to="/"> 
           <Logo src={image} alt="Logo SAES Advogados, Voltar para a página inicial" />
         </RouterLink>
@@ -176,19 +231,11 @@ function NavbarComponent() {
       <NavbarContainer>
         <NavbarWrapper>
           <NavbarList>
-            {/* Links de Seção (Scroll Suave) - Usar NavbarScrollLink e 'to' com ID da seção */}
-            <NavbarItem><NavbarScrollLink to="noticias">Início</NavbarScrollLink></NavbarItem>
-            <NavbarItem><NavbarScrollLink to="quem-somos">Quem Somos</NavbarScrollLink></NavbarItem>
-            <NavbarItem><NavbarScrollLink to="atuacao">Atuação</NavbarScrollLink></NavbarItem>
-            <NavbarItem><NavbarScrollLink to="equipe">Equipe</NavbarScrollLink></NavbarItem>
-            <NavbarItem><NavbarScrollLink to="newsletter">Contato</NavbarScrollLink></NavbarItem>
-            
-            {/* Links de Páginas (Router) - Usar NavbarRouterLink e 'to' com a ROTA */}
-            <NavbarItem><NavbarRouterLink to="/escritorio">Escritório</NavbarRouterLink></NavbarItem> 
-            <NavbarItem><NavbarRouterLink to="/publicacoes">Publicações</NavbarRouterLink></NavbarItem>
-            <NavbarItem><NavbarRouterLink to="/artigos">Artigos</NavbarRouterLink></NavbarItem>
-            <NavbarItem><NavbarRouterLink to="/novidades-legislativas">Novidades Legislativas</NavbarRouterLink></NavbarItem>
-            <NavbarItem><NavbarRouterLink to="/informativos">Informativos</NavbarRouterLink></NavbarItem>
+            {menuItems.map((item, index) => (
+              <NavbarItem key={index}>
+                {renderLink(item)}
+              </NavbarItem>
+            ))}
           </NavbarList>
 
           <SearchContainer>

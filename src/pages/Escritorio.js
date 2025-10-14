@@ -1,128 +1,197 @@
-import React, { useRef, useEffect, useState } from 'react';
-import styled from 'styled-components';
-import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
-import worker from 'pdfjs-dist/build/pdf.worker.entry';
+// src/pages/Escritorio.js
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = worker;
+import React from 'react';
+import styled from 'styled-components';
+import { FaDownload } from 'react-icons/fa'; 
+
+// ATENÇÃO: A URL a ser usada no visualizador do Google DEVE ser uma URL PÚBLICA e COMPLETA. 
+// SUBSTITUA PELO DOMÍNIO FINAL QUANDO PUBLICAR.
+const PDF_URL_HOSTED = 'https://www.saesadvogados.com.br/portfolio_saes_advogados_2024.pdf'; 
+
+// URL para visualização local (funciona em localhost)
+const PDF_URL_LOCAL = '/portfolio_saes_advogados_2024.pdf'; 
+
+// Lógica para determinar se estamos em ambiente local
+const isLocal = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+
+// URL final do iframe
+let iframeSrc;
+let viewerNote;
+
+if (isLocal) {
+  // Se for local, usamos o visualizador nativo do browser, apontando para o arquivo local.
+  iframeSrc = PDF_URL_LOCAL; 
+  viewerNote = "Você está em ambiente local. O visualizador nativo do seu navegador está sendo usado.";
+} else {
+  // Se estiver em produção, usamos o visualizador do Google, apontando para a URL pública.
+  iframeSrc = `https://docs.google.com/viewer?url=${PDF_URL_HOSTED}&embedded=true`;
+  viewerNote = "Usando o visualizador do Google Docs. Se a URL não for pública, pode haver falha na visualização.";
+}
+
+// =========================================================================
+// ESTILOS (MANTIDOS DA ÚLTIMA VERSÃO)
+// =========================================================================
 
 const Section = styled.section`
   padding: 4rem 10%;
-  background-color: ${({ theme }) => theme.background || '#f4f4f4'};
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
+  background-color: #f9f9f9;
+  min-height: 80vh;
 `;
 
-const Title = styled.h2`
-  font-size: 2.5rem;
-  color: ${({ theme }) => theme.text || '#222'};
-  margin-bottom: 2rem;
+const Title = styled.h1`
   text-align: center;
+  font-size: 2.8rem;
+  color: #222;
+  margin-bottom: 3rem;
+  font-weight: 700;
 `;
 
-const PdfContainer = styled.div`
+const ContentWrapper = styled.div`
+  max-width: 1000px; 
+  margin: 0 auto;
+`;
+
+const InfoColumn = styled.div`
+  margin-bottom: 3rem; 
+`;
+
+const PdfViewerColumn = styled.div`
   width: 100%;
-  max-width: 800px;
-  background-color: ${({ theme }) => theme.card || 'white'};
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
-`;
+  height: 800px; 
 
-const CanvasWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-`;
-
-const ActionButton = styled.button`
-  padding: 0.8rem 1.2rem;
-  background-color: transparent;
-  border: 2px solid orange;
-  color: ${({ theme }) => theme.text || '#222'};
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: 0.3s;
-
-  &:hover {
-    background-color: orange;
-    color: white;
+  @media (max-width: 1024px) {
+    height: 70vh;
   }
 `;
 
-const Escritorio = () => {
-  const pdfUrl = process.env.PUBLIC_URL + '/portfolio_saes_advogados_2024.pdf';
-  const canvasRefs = useRef([]);
-  const [numPages, setNumPages] = useState(0);
+const Paragraph = styled.p`
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #34495E;
+  margin-bottom: 1.5rem;
+`;
 
-  useEffect(() => {
-    const renderPDF = async () => {
-      const loadingTask = pdfjsLib.getDocument(pdfUrl);
-      const pdf = await loadingTask.promise;
-      setNumPages(pdf.numPages);
+const ServiceTitle = styled.h2`
+  font-size: 1.3rem;
+  color: #F39C12;
+  margin: 2rem 0 1rem;
+  font-weight: 600;
+`;
 
-      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-        const page = await pdf.getPage(pageNum);
-        const viewport = page.getViewport({ scale: 1.5 });
+const ServicesList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+`;
 
-        const canvas = canvasRefs.current[pageNum - 1];
-        const context = canvas.getContext('2d');
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
+const ServiceItem = styled.li`
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  
+  a {
+    color: #F39C12; 
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
 
-        await page.render({
-          canvasContext: context,
-          viewport: viewport,
-        }).promise;
-      }
-    };
+const DownloadLink = styled.a`
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2rem;
+    font-size: 1rem;
+    color: #34495E;
+    text-decoration: none;
 
-    renderPDF();
-  }, [pdfUrl]);
+    &:hover {
+        color: #F39C12;
+    }
+`;
 
-  const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = pdfUrl;
-    link.download = 'portfolio_saes_advogados_2024.pdf';
-    link.click();
-  };
+const IframeViewer = styled.iframe`
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+`;
 
-  const handlePrint = () => {
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = pdfUrl;
-    document.body.appendChild(iframe);
-    iframe.onload = () => {
-      iframe.contentWindow.focus();
-      iframe.contentWindow.print();
-    };
-  };
 
+function Escritorio() {
+  const services = [
+    { name: 'Licenciamento Ambiental e Urbanístico', url: '/servicos/licenciamento' },
+    { name: 'Due Diligence Ambiental e Análise de Risco', url: '/servicos/due-diligence' },
+    { name: 'Compliance Ambiental', url: '/servicos/compliance' },
+    { name: 'Pareceres e Opiniões Legais', url: '/servicos/pareceres' },
+    { name: 'Conflitos Ambientais', url: '/servicos/conflitos' },
+    { name: 'Outros serviços', url: '/servicos' },
+  ];
+    
   return (
     <Section>
-      <Title>Escritório</Title>
-      <PdfContainer>
-        <ButtonGroup>
-          <ActionButton onClick={handleDownload}>⬇ Baixar PDF</ActionButton>
-          <ActionButton onClick={handlePrint}>🖨️ Imprimir</ActionButton>
-        </ButtonGroup>
-        <CanvasWrapper>
-          {Array.from({ length: numPages }, (_, i) => (
-            <canvas key={i} ref={(el) => (canvasRefs.current[i] = el)} />
-          ))}
-        </CanvasWrapper>
-      </PdfContainer>
+      <Title>O Escritório</Title>
+
+      <ContentWrapper>
+        <InfoColumn>
+            <Paragraph>
+              Saes Advogados é a realização de um projeto comum de advogados especializados em direito ambiental, que partilham do mesmo objetivo: levar soluções personalizadas e gerar oportunidades estratégicas aos seus clientes.
+            </Paragraph>
+            
+            <Paragraph>
+              Com visão empresarial e experiência nos mais diversos setores da economia, nossa equipe está preparada para prestar assessoria e consultoria jurídica em qualquer assunto relacionado à matéria ambiental.
+            </Paragraph>
+            
+            <Paragraph>
+              O escritório acredita que o comprometimento de seus profissionais permite um relacionamento duradouro e construtivo com seus clientes, otimizando a busca por soluções com excelência técnica e dinamismo.
+            </Paragraph>
+            
+            <Paragraph>
+              A partir de uma atuação ética e transparente, Saes Advogados deseja contribuir para o desenvolvimento das atividades de nossos clientes com segurança jurídica e sustentabilidade.
+            </Paragraph>
+            
+            <ServiceTitle>Conheça mais serviços:</ServiceTitle>
+            
+            <ServicesList>
+              {services.map((service, index) => (
+                <ServiceItem key={index}>
+                  <a href={service.url}>
+                    {service.name}
+                  </a>
+                </ServiceItem>
+              ))}
+            </ServicesList>
+            
+            <DownloadLink href={PDF_URL_LOCAL} target="_blank" rel="noopener noreferrer">
+                <FaDownload /> Baixar Portfólio em PDF
+            </DownloadLink>
+
+        </InfoColumn>
+
+        <PdfViewerColumn>
+            <h2 style={{fontSize: '1.5rem', color: '#222', marginBottom: '1rem', fontWeight: '600'}}>Portfólio</h2>
+            
+            {/* Aviso sobre o visualizador */}
+            <p style={{marginBottom: '1rem', fontSize: '0.9rem', color: isLocal ? 'blue' : 'gray'}}>
+                {viewerNote}
+            </p>
+
+            {/* Iframe que usa a URL condicionada */}
+            <IframeViewer 
+                src={iframeSrc}
+                title="Portfólio SAES Advogados"
+                allowFullScreen
+                frameBorder="0"
+                loading="lazy"
+            />
+        </PdfViewerColumn>
+      </ContentWrapper>
     </Section>
   );
-};
+}
 
 export default Escritorio;

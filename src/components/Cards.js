@@ -1,7 +1,9 @@
-// src/components/Cards.js
+// src/components/Cards.js (MODIFICADO)
+
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FaLeaf, FaSearch, FaCheckCircle, FaBalanceScale, FaGavel } from 'react-icons/fa';
+import { Link } from 'react-router-dom'; // Importa Link para navegação
+import { FaLeaf, FaSearch, FaCheckCircle, FaBalanceScale, FaGavel } from 'react-icons/fa'; 
 
 const Wrapper = styled.div`
   display: flex;
@@ -14,6 +16,21 @@ const ServiceGrid = styled.div`
   grid-template-columns: repeat(5, 1fr);
   gap: 2rem;
   width: 100%;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const ServiceCardLink = styled(Link)` /* Novo componente de Link */
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  height: 100%;
+  width: 100%;
 `;
 
 const ServiceCard = styled.div`
@@ -24,11 +41,12 @@ const ServiceCard = styled.div`
   transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
   width: 100%;
   cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   opacity: ${({ isHovered, isActive }) => (isHovered && !isActive ? 0.5 : 1)};
 
   &:hover {
     transform: translateY(-10px);
-    box-shadow: none;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   }
 
   h3 {
@@ -49,31 +67,6 @@ const ServiceCard = styled.div`
   }
 `;
 
-const Botao = styled.button`
-  margin-top: 3rem;
-  width: 150px;
-  padding: 0.8rem 1.5rem;
-  font-size: 1rem;
-  background-color: white;
-  border: 2px solid orange;
-  border-radius: 8px;
-  color: black;
-  cursor: pointer;
-  transition: 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-
-  &:hover {
-    background-color: orange;
-    color: white;
-  }
-
-  svg {
-    font-size: 1.5rem;
-  }
-`;
 
 function Cards() {
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -82,27 +75,33 @@ function Cards() {
     {
       icon: <FaLeaf />,
       title: "Licenciamento Ambiental e Urbanístico",
-      description: "Consultoria jurídica e estratégica para prevenção de riscos e solução de conflitos em todas as etapas do licenciamento."
+      description: "Consultoria jurídica e estratégica para prevenção de riscos e solução de conflitos em todas as etapas do licenciamento.",
+      // Rota adicionada
+      path: "/servicos/licenciamento-ambiental-urbanistico"
     },
     {
       icon: <FaSearch />,
       title: "Due Diligence Ambiental e Análise de Risco",
-      description: "Avaliação de riscos e passivos para antecipar necessidades e evitar questionamentos."
+      description: "Avaliação de riscos e passivos para antecipar necessidades e evitar questionamentos.",
+      path: "/servicos/due-diligence-ambiental-e-analise-de-risco"
     },
     {
       icon: <FaCheckCircle />,
       title: "Compliance Ambiental",
-      description: "Programas de compliance e normatização de processos internos."
+      description: "Programas de compliance e normatização de processos internos.",
+      path: "/servicos/compliance-ambiental"
     },
     {
       icon: <FaBalanceScale />,
       title: "Pareceres e Opiniões Legais",
-      description: "Análises de questões ambientais específicas para orientar a tomada de decisão e subsidiar processos."
+      description: "Análises de questões ambientais específicas para orientar a tomada de decisão e subsidiar processos.",
+      path: "/servicos/pareceres-e-opinioes-legais"
     },
     {
       icon: <FaGavel />,
       title: "Consultoria Estratégica",
-      description: "Planejamento estratégico ambiental e suporte jurídico para expansão de negócios e redução de riscos."
+      description: "Planejamento estratégico ambiental e suporte jurídico para expansão de negócios e redução de riscos.",
+      path: "/servicos/consultoria-estrategica"
     }
   ];
 
@@ -110,30 +109,22 @@ function Cards() {
     <Wrapper>
       <ServiceGrid>
         {services.map((service, index) => (
-          <ServiceCard
-            key={index}
-            isHovered={hoveredCard !== null && hoveredCard !== index}
-            isActive={hoveredCard === index}
-            onMouseEnter={() => setHoveredCard(index)}
-            onMouseLeave={() => setHoveredCard(null)}
-          >
-            {service.icon}
-            <h3>{service.title}</h3>
-            <p>{service.description}</p>
-          </ServiceCard>
+          <ServiceCardLink key={index} to={service.path}>
+            <ServiceCard
+              isHovered={hoveredCard !== null && hoveredCard !== index}
+              isActive={hoveredCard === index}
+              onMouseEnter={() => setHoveredCard(index)}
+              onMouseLeave={() => setHoveredCard(null)}
+            >
+              {service.icon}
+              <h3>{service.title}</h3>
+              <p>{service.description}</p>
+            </ServiceCard>
+          </ServiceCardLink>
         ))}
       </ServiceGrid>
-
-      <Botao>
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-          <path d="M12 5v14M5 12h14"></path>
-        </svg>
-        Portfólio
-      </Botao>
     </Wrapper>
   );
 }
 
 export default Cards;
-
-

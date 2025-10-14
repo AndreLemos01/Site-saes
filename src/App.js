@@ -1,4 +1,4 @@
-// src/App.js
+// src/App.js (MODIFICADO)
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
@@ -7,25 +7,24 @@ import Noticias from './components/Noticias';
 import QuemSomos from './components/QuemSomos';
 import Atuacao from './components/Atuacao';
 import Equipe from './components/Equipe';
-import Newsletter from './components/Newsletter';
+import Newsletter from './components/Newsletter'; 
 import Frase from './components/Frase';
 import Selos from './components/Selos';
-import ThemeToggle from './components/ThemeToggle'; // NOVO: Import do ThemeToggle
+import ThemeToggle from './components/ThemeToggle'; 
 
 import ArticlePage from './pages/ArticlePage';
 import AdminPage from './pages/AdminPage';
 import Escritorio from './pages/Escritorio';
-import Resultados from './pages/Resultados'; // NOVO: Import para a página de busca
+import Resultados from './pages/Resultados'; 
+import NovidadesLegislativas from './pages/NovidadesLegislativas'; 
+import ArtigosPage from './pages/ArtigosPage'; 
+import PublicacoesPage from './pages/PublicacoesPage'; 
+import NewslettersPage from './pages/NewslettersPage'; 
+import InformativosPage from './pages/InformativosPage'; 
 
-import './App.css';
-import './index.css';
+// NOVO: Importa o componente de serviço
+import LicenciamentoAmbiental from './pages/LicenciamentoAmbiental'; 
 
-// Componentes Mock para rotas de navegação que não foram fornecidas (a ser substituído por conteúdo real)
-const PublicacoesPage = () => <Layout><h2>Publicações</h2><p>Conteúdo em desenvolvimento.</p></Layout>;
-const ArtigosPage = () => <Layout><h2>Artigos</h2><p>Conteúdo em desenvolvimento.</p></Layout>;
-const NovidadesPage = () => <Layout><h2>Novidades Legislativas</h2><p>Conteúdo em desenvolvimento.</p></Layout>;
-const InformativosPage = () => <Layout><h2>Informativos</h2><p>Conteúdo em desenvolvimento.</p></Layout>;
-const NewsletterPage = () => <Layout><Newsletter /></Layout>; // Envolve o componente Newsletter na rota
 
 function App({ toggleTheme, isDarkMode }) {
   return (
@@ -55,17 +54,26 @@ function App({ toggleTheme, isDarkMode }) {
             </Layout>
           }
         />
-        <Route
-          path="/escritorio"
-          element={
-            <Layout>
-              <Escritorio />
-            </Layout>
-          }
-        />
         <Route path="/admin" element={<AdminPage />} />
 
-        {/* ROTAS ADICIONADAS PARA O FUNCIONAMENTO DA NAVBAR */}
+        {/* ROTAS DE SERVIÇOS (NOVAS) */}
+        <Route 
+          path="/servicos/licenciamento-ambiental-urbanistico" 
+          element={
+            <Layout>
+              <LicenciamentoAmbiental />
+            </Layout>
+          } 
+        />
+        {/* Adicione rotas placeholder para os outros serviços mencionados no Cards.js e no LicenciamentoAmbiental.js */}
+        <Route path="/servicos/due-diligence-ambiental-e-analise-de-risco" element={<Layout><h2>Due Diligence</h2></Layout>} />
+        <Route path="/servicos/compliance-ambiental" element={<Layout><h2>Compliance Ambiental</h2></Layout>} />
+        <Route path="/servicos/pareceres-e-opinioes-legais" element={<Layout><h2>Pareceres Legais</h2></Layout>} />
+        <Route path="/servicos/conflitos-ambientais" element={<Layout><h2>Conflitos Ambientais</h2></Layout>} />
+        <Route path="/servicos/consultoria-estrategica" element={<Layout><h2>Consultoria Estratégica</h2></Layout>} />
+        <Route path="/servicos/outros-servicos" element={<Layout><h2>Outros Serviços</h2></Layout>} />
+
+        {/* OUTRAS ROTAS */}
         <Route 
           path="/search" 
           element={
@@ -74,11 +82,56 @@ function App({ toggleTheme, isDarkMode }) {
             </Layout>
           } 
         />
-        <Route path="/newsletter" element={<NewsletterPage />} />
-        <Route path="/publicacoes" element={<PublicacoesPage />} />
-        <Route path="/artigos" element={<ArtigosPage />} />
-        <Route path="/novidades-legislativas" element={<NovidadesPage />} />
-        <Route path="/informativos" element={<InformativosPage />} />
+        <Route 
+          path="/newsletter" 
+          element={
+            <Layout>
+              <NewslettersPage />
+            </Layout>
+          } 
+        />
+        <Route 
+          path="/publicacoes" 
+          element={
+            <Layout>
+              <PublicacoesPage />
+            </Layout>
+          } 
+        />
+        <Route 
+          path="/artigos" 
+          element={
+            <Layout>
+              <ArtigosPage />
+            </Layout>
+          } 
+        />
+        <Route 
+          path="/novidades-legislativas" 
+          element={
+            <Layout>
+              <NovidadesLegislativas />
+            </Layout>
+          } 
+        />
+        <Route 
+          path="/informativos" 
+          element={
+            <Layout>
+              <InformativosPage />
+            </Layout>
+          } 
+        />
+        
+        {/* Rota do Escritório, que foi deslocada para ter o Portfólio */}
+        <Route
+          path="/escritorio"
+          element={
+            <Layout>
+              <Escritorio />
+            </Layout>
+          }
+        />
       </Routes>
     </>
   );

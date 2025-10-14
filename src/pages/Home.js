@@ -1,12 +1,19 @@
-import React from 'react';
+// Exemplo de código a ser adicionado em src/pages/Home.js
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { scroller } from 'react-scroll';
 
-function Home() {
-  return (
-    <div>
-      <h1>Bem-vindo ao nosso Escritório de Direito Ambiental</h1>
-      <p>Estamos aqui para oferecer serviços especializados em direito ambiental.</p>
-    </div>
-  );
-}
+// ... dentro do seu componente Home ...
+const { hash } = useLocation();
 
-export default Home;
+useEffect(() => {
+    if (hash) {
+        const id = hash.replace('#', '');
+        scroller.scrollTo(id, {
+            smooth: true,
+            offset: -100, // Ajuste de offset
+            duration: 500,
+        });
+    }
+}, [hash]);
+// ...

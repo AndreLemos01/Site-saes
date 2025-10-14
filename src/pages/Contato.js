@@ -1,3 +1,4 @@
+// src/pages/Contato.js
 import React from 'react';
 
 function Contato() {
