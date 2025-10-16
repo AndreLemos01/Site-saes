@@ -22,8 +22,10 @@ import PublicacoesPage from './pages/PublicacoesPage';
 import NewslettersPage from './pages/NewslettersPage'; 
 import InformativosPage from './pages/InformativosPage'; 
 
-// NOVO: Importa o componente de serviço
+// Importa os componentes de serviço
 import LicenciamentoAmbiental from './pages/LicenciamentoAmbiental'; 
+import DueDiligenceAmbiental from './pages/DueDiligenceAmbiental';
+import ComplianceAmbiental from './pages/ComplianceAmbiental'; // NOVO: Importa o componente de Compliance Ambiental
 
 
 function App({ toggleTheme, isDarkMode }) {
@@ -56,7 +58,7 @@ function App({ toggleTheme, isDarkMode }) {
         />
         <Route path="/admin" element={<AdminPage />} />
 
-        {/* ROTAS DE SERVIÇOS (NOVAS) */}
+        {/* ROTAS DE SERVIÇOS */}
         <Route 
           path="/servicos/licenciamento-ambiental-urbanistico" 
           element={
@@ -65,9 +67,22 @@ function App({ toggleTheme, isDarkMode }) {
             </Layout>
           } 
         />
-        {/* Adicione rotas placeholder para os outros serviços mencionados no Cards.js e no LicenciamentoAmbiental.js */}
-        <Route path="/servicos/due-diligence-ambiental-e-analise-de-risco" element={<Layout><h2>Due Diligence</h2></Layout>} />
-        <Route path="/servicos/compliance-ambiental" element={<Layout><h2>Compliance Ambiental</h2></Layout>} />
+        <Route 
+          path="/servicos/due-diligence-ambiental-e-analise-de-risco" 
+          element={
+            <Layout>
+              <DueDiligenceAmbiental />
+            </Layout>
+          } 
+        />
+        <Route 
+          path="/servicos/compliance-ambiental" 
+          element={
+            <Layout>
+              <ComplianceAmbiental /> {/* Rota atualizada para usar o componente ComplianceAmbiental */}
+            </Layout>
+          } 
+        />
         <Route path="/servicos/pareceres-e-opinioes-legais" element={<Layout><h2>Pareceres Legais</h2></Layout>} />
         <Route path="/servicos/conflitos-ambientais" element={<Layout><h2>Conflitos Ambientais</h2></Layout>} />
         <Route path="/servicos/consultoria-estrategica" element={<Layout><h2>Consultoria Estratégica</h2></Layout>} />

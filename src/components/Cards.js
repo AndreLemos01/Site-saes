@@ -38,15 +38,16 @@ const ServiceCard = styled.div`
   border-radius: 10px;
   padding: 2rem;
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+  /* box-shadow removido da transição e da propriedade principal */
+  transition: transform 0.3s ease, opacity 0.3s ease; 
   width: 100%;
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); <--- Removido */
   opacity: ${({ isHovered, isActive }) => (isHovered && !isActive ? 0.5 : 1)};
 
   &:hover {
     transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    /* box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); <--- Removido */
   }
 
   h3 {

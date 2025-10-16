@@ -1,4 +1,4 @@
-// src/pages/LicenciamentoAmbiental.js
+// src/pages/ComplianceAmbiental.js
 
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
@@ -8,7 +8,6 @@ const PageContainer = styled.div`
   /* Padding-top mantido para evitar sobreposição da Navbar */
   padding-top: 180px; 
   padding-bottom: 4rem;
-  /* Removido o padding lateral e max-width para que o card ocupe o espaço corretamente */
   min-height: 90vh;
   background-color: #f4f4f4; /* Fundo cinza da página */
 `;
@@ -17,12 +16,12 @@ const CardWrapper = styled.div`
   background-color: white;
   border-radius: 8px; /* Borda levemente arredondada para o card */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Sombra sutil para destacar o card */
-  max-width: 960px; /* ALTERADO: Largura máxima do card (mais estreito) */
+  max-width: 960px; /* Largura máxima do card */
   margin: 0 auto; /* Centraliza o card na página */
   padding: 40px 10%; /* Espaçamento interno (padding) do card */
   
   /* Ajuste para telas menores */
-  @media (max-width: 1000px) { /* Ajustando o breakpoint para 960px + margem */
+  @media (max-width: 1200px) {
     /* Adiciona margem lateral para telas que não atingem o max-width */
     margin-left: 5%;
     margin-right: 5%;
@@ -86,42 +85,32 @@ const ServiceItem = styled.li`
   }
 `;
 
-function LicenciamentoAmbiental() {
+
+function ComplianceAmbiental() {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
     
-    const allServices = [
+    // Lista de serviços, excluindo a página atual (Compliance Ambiental)
+    const services = [
         { name: 'Licenciamento Ambiental e Urbanístico', path: '/servicos/licenciamento-ambiental-urbanistico' },
         { name: 'Due Diligence Ambiental e Análise de Risco', path: '/servicos/due-diligence-ambiental-e-analise-de-risco' },
-        { name: 'Compliance Ambiental', path: '/servicos/compliance-ambiental' },
         { name: 'Pareceres e Opiniões Legais', path: '/servicos/pareceres-e-opinioes-legais' },
         { name: 'Conflitos Ambientais', path: '/servicos/conflitos-ambientais' },
         { name: 'Outros serviços', path: '/servicos/outros-servicos' },
     ];
 
-    // REMOVIDO: Filtra o serviço atual da lista de "Conheça mais serviços"
-    const services = allServices.filter(service => 
-        service.name !== 'Licenciamento Ambiental e Urbanístico'
-    );
-
     return (
         <PageContainer>
             <CardWrapper>
-                <Title>Licenciamento Ambiental e Urbanístico</Title>
+                <Title>Compliance Ambiental</Title>
 
                 <ContentBlock>
                     <Paragraph>
-                        O Saes Advogados possui anos de consultoria jurídica no desenvolvimento de empreendimentos de grande porte, desde a concepção do projeto até sua entrada em funcionamento, o que nos garante uma visão estratégica e global do licenciamento ambiental.
+                        A equipe do Saes Advogados tem experiência na elaboração de programas de compliance e normatização de processos internos para orientar e garantir o cumprimento a normas nacionais e internacionais, bem como à política interna de empresas. Além disso, seus advogados fornecerem treinamento interno para as equipes das empresas, com vistas a sua melhor implementação. O objetivo principal desses produtos é esclarecer e padronizar todas as condutas a serem adotadas pelas empresas e terceirizados, com vistas a orientá-los de forma clara e objetiva quanto as suas responsabilidades perante a sociedade, dar conhecimento sobre os aspectos ambientais de suas atividades e auxiliá-los na implantação das melhores práticas ambientais.
                     </Paragraph>
                     <Paragraph>
-                        Essa expertise nos permite realizar a gestão de todo o processo de licenciamento ambiental, incluindo a interface com órgãos públicos e demais atores envolvidos, bem como a integração de equipes de consultoria técnica. Também nos autoriza a prestar assessoria jurídica nos pontos chaves do licenciamento, como o enquadramento legal do empreendimento, a revisão de estudos ambientais, o suporte jurídico em audiências públicas, a realização de reuniões e contato direto com os órgãos envolvidos e o acompanhamento de inquéritos civis e penais.
-                    </Paragraph>
-                    <Paragraph>
-                        No pós-licenciamento, fazemos a gestão de condicionantes de licenças ambientais, acompanhamos e revisamos planos e programas ambientais de Planos Básicos Ambientais (PBA) a serem realizados pelos empreendedores na vigência de suas licenças, além de realizar toda interface com o órgão ambiental.
-                    </Paragraph>
-                    <Paragraph>
-                        Além da parte ambiental, também atuamos no licenciamento urbanístico de empreendimentos, com a análise da legislação aplicável e a verificação da adequação do projeto às normas urbanísticas, bem como, em casos de irregularidades, na avaliação das medidas cabíveis para a devida regularização do empreendimento.
+                        Os manuais e normativos são moldados conforme a necessidade de cada cliente e visam, também, tornar as empresas aptas para aos processos de certificação ambiental da ISO 14.001.
                     </Paragraph>
                     
                     <ServiceTitle>Conheça mais serviços:</ServiceTitle>
@@ -142,4 +131,4 @@ function LicenciamentoAmbiental() {
     );
 }
 
-export default LicenciamentoAmbiental;
+export default ComplianceAmbiental;
