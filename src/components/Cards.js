@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom'; // Importa Link para navegação
+import { Link } from 'react-router-dom'; 
+// FaLightbulb removido, FaGavel mantido
 import { FaLeaf, FaSearch, FaCheckCircle, FaBalanceScale, FaGavel } from 'react-icons/fa'; 
 
 const Wrapper = styled.div`
@@ -13,6 +14,7 @@ const Wrapper = styled.div`
 
 const ServiceGrid = styled.div`
   display: grid;
+  /* Revertido para 5 colunas */
   grid-template-columns: repeat(5, 1fr);
   gap: 2rem;
   width: 100%;
@@ -77,7 +79,6 @@ function Cards() {
       icon: <FaLeaf />,
       title: "Licenciamento Ambiental e Urbanístico",
       description: "Consultoria jurídica e estratégica para prevenção de riscos e solução de conflitos em todas as etapas do licenciamento.",
-      // Rota adicionada
       path: "/servicos/licenciamento-ambiental-urbanistico"
     },
     {
@@ -98,11 +99,12 @@ function Cards() {
       description: "Análises de questões ambientais específicas para orientar a tomada de decisão e subsidiar processos.",
       path: "/servicos/pareceres-e-opinioes-legais"
     },
+    // O card Florestal foi removido.
     {
       icon: <FaGavel />,
-      title: "Consultoria Estratégica",
-      description: "Planejamento estratégico ambiental e suporte jurídico para expansão de negócios e redução de riscos.",
-      path: "/servicos/consultoria-estrategica"
+      title: "Conflitos Ambientais",
+      description: "Atuação em ações civis públicas, criminais e outras ações judiciais, infrações administrativas, termos de ajustamento de conduta e outros acordos.",
+      path: "/servicos/conflitos-ambientais"
     }
   ];
 

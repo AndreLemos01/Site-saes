@@ -1,13 +1,14 @@
-// src/pages/ArtigosPage.js
+// src/pages/ArtigosPage.js (ATUALIZADO)
 
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import SaesLogo from '../images/logo-saes.png'; // Importa o logo para fallback
 
 const API_BASE_URL = 'https://www.saesadvogados.com.br/wp-json/wp/v2';
 
 const PageContainer = styled.div`
-  /* Padding-top mantido para evitar sobreposição */
+  /* Padding-top mantido para evitar sobreposição da Navbar */
   padding-top: 180px; 
   padding-bottom: 4rem;
   padding-left: 10%;
@@ -34,12 +35,14 @@ const PostGrid = styled.div`
     gap: 30px;
 `;
 
-const PostCard = styled.div`
+const PostCard = styled(Link)` /* Transforma o PostCard em Link para toda a área ser clicável */
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease;
-    overflow: hidden; /* Garante que a imagem siga o raio de borda */
+    overflow: hidden; 
+    text-decoration: none; /* Remove sublinhado do link */
+    color: inherit; /* Mantém a cor do texto */
     
     &:hover {
         transform: translateY(-5px);
@@ -47,11 +50,19 @@ const PostCard = styled.div`
     }
 `;
 
+// Modifica PostImage para aceitar props e lidar com o logo
 const PostImage = styled.img`
     width: 100%;
-    height: 200px; /* Altura fixa para uniformidade visual */
-    object-fit: cover;
+    height: 200px; 
+    object-fit: cover; 
     display: block;
+
+    /* Estilo para quando a imagem for o logo (isLogo=true) */
+    ${props => props.isLogo && `
+        object-fit: contain; 
+        padding: 20px; 
+        background-color: #f8f8f8; 
+    `}
 `;
 
 const PostContent = styled.div`
@@ -74,17 +85,6 @@ const PostExcerpt = styled.div`
     p { margin: 0; }
 `;
 
-const ReadMoreLink = styled(Link)`
-    color: #F39C12;
-    text-decoration: none;
-    font-weight: 600;
-    display: inline-block;
-
-    &:hover {
-        text-decoration: underline;
-    }
-`;
-
 const LoadingMessage = styled.p`
     text-align: center;
     font-size: 1.2rem;
@@ -101,17 +101,26 @@ const ArtigosPage = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
         
-        const fetchPosts = async () => {
+        // Refatorado para IIFE para resolver o aviso 'fetchArticles is never used'
+        (async () => {
             try {
                 // 1. Encontrar o ID da categoria "Artigos" (slug=artigos)
                 const categoryRes = await fetch(`${API_BASE_URL}/categories?slug=artigos`);
                 const categories = await categoryRes.json();
                 
                 if (categories.length === 0) {
-                    throw new Error('Categoria "Artigos" não encontrada na API.');
+                    // Tenta encontrar "Artigos" com 'a' maiúsculo ou outra variação se o slug não funcionar
+                    const fallbackCategories = await fetch(`${API_BASE_URL}/categories`);
+                    const allCategories = await fallbackCategories.json();
+                    const artigosCategory = allCategories.find(c => c.name.toLowerCase() === 'artigos');
+                    
+                    if (!artigosCategory) {
+                        throw new Error('Categoria "Artigos" não encontrada na API.');
+                    }
+                    var categoryID = artigosCategory.id;
+                } else {
+                    categoryID = categories[0].id;
                 }
-                
-                const categoryID = categories[0].id;
 
                 // 2. Buscar os posts dessa categoria, incluindo o embed para featured media
                 const postsRes = await fetch(`${API_BASE_URL}/posts?per_page=20&categories=${categoryID}&_embed`);
@@ -122,14 +131,19 @@ const ArtigosPage = () => {
                     const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
                     const imageUrl = featuredMedia?.media_details?.sizes?.medium_large?.source_url || 
                                      featuredMedia?.media_details?.sizes?.medium?.source_url ||
-                                     featuredMedia?.source_url; // Fallback para URL original
+                                     featuredMedia?.source_url; 
 
+                    // Verifica se a URL da imagem existe
+                    const useLogoFallback = !imageUrl;
+                    
                     return {
                         id: post.id,
                         title: post.title.rendered,
                         excerpt: post.excerpt.rendered,
                         link: `/article/${post.id}`, 
-                        imageUrl: imageUrl || 'https://via.placeholder.com/600x400?text=Saes+Advogados' // Fallback se não houver imagem
+                        // Usa o logo importado como fallback
+                        imageUrl: useLogoFallback ? SaesLogo : imageUrl, 
+                        isLogo: useLogoFallback, // Adiciona flag para controle de estilo no PostImage
                     };
                 });
 
@@ -140,16 +154,14 @@ const ArtigosPage = () => {
             } finally {
                 setLoading(false);
             }
-        };
-
-        fetchPosts();
+        })();
     }, []);
 
     return (
         <PageContainer>
             <ContentHeader>
                 <Title>Artigos</Title>
-                <p style={{ color: '#666' }}>Artigos e análises aprofundadas de nossos especialistas em Direito Ambiental.</p>
+                <p style={{ color: '#666' }}>Artigos e análises jurídicas detalhadas do nosso time.</p>
             </ContentHeader>
 
             {loading && <LoadingMessage>Carregando artigos...</LoadingMessage>}
@@ -162,14 +174,11 @@ const ArtigosPage = () => {
             {!loading && !error && posts.length > 0 && (
                 <PostGrid>
                     {posts.map(post => (
-                        <PostCard key={post.id}>
-                            <PostImage src={post.imageUrl} alt={post.title} />
+                        <PostCard key={post.id} to={post.link}>
+                            <PostImage src={post.imageUrl} alt={post.title} isLogo={post.isLogo} />
                             <PostContent>
                                 <PostTitle dangerouslySetInnerHTML={{ __html: post.title }} />
                                 <PostExcerpt dangerouslySetInnerHTML={{ __html: post.excerpt }} />
-                                <ReadMoreLink to={post.link}>
-                                    Leia mais »
-                                </ReadMoreLink>
                             </PostContent>
                         </PostCard>
                     ))}

@@ -17,12 +17,14 @@ const TopBar = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: transparent;
+  /* MUDANÇA PARA BRANCO SÓLIDO */
+  background: #ffffff; 
 `;
 
 const LogoContainer = styled.div`
-  background: ${({ theme }) => theme.card}cc; 
-  backdrop-filter: blur(10px);
+  /* MUDANÇA PARA BRANCO SÓLIDO */
+  background: #ffffff; 
+  /* backdrop-filter: blur(10px); REMOVIDO para fundo sólido */
   width: 100%;
   display: flex;
   justify-content: center;
@@ -43,8 +45,10 @@ const NavbarContainer = styled.div`
 `;
 
 const NavbarWrapper = styled.nav`
-  background-color: ${({ theme }) => theme.card}a0;
-  backdrop-filter: blur(10px);
+  /* MUDANÇA PARA BRANCO SÓLIDO */
+  background-color: #ffffff;
+  /* backdrop-filter: blur(10px); REMOVIDO para fundo sólido */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra sutil para destaque */
   width: 80%;
   padding: 0.5rem;
   border-radius: 10px;
@@ -69,7 +73,8 @@ const NavbarItem = styled.li`
 
 const LinkStyle = styled.span`
   text-decoration: none;
-  color: ${({ theme }) => theme.text};
+  /* Ajustado para cor escura para contraste no fundo branco */
+  color: #333333;
   padding: 0.3rem 0.6rem;
   border-radius: 5px;
   transition: all 0.3s ease;
@@ -134,7 +139,8 @@ const SearchContainer = styled.div`
   position: relative;
   width: 200px;
   border-radius: 8px;
-  background-color: ${({ theme }) => theme.border}; 
+  /* Ajuste para cinza claro no fundo branco */
+  background-color: #f0f0f0; 
   padding: 0.5rem;
 `;
 
@@ -147,17 +153,20 @@ const SearchInput = styled.input`
   height: 15px;
   width: 85%;
   background-color: transparent;
-  color: ${({ theme }) => theme.text}; 
+  /* Cor escura para o texto digitado */
+  color: #333333; 
 
   &::placeholder {
-    color: ${({ theme }) => theme.text}80; 
+    /* Cor cinza intermediário para o placeholder */
+    color: #888888; 
   }
 `;
 
 const SearchIcon = styled.svg`
   width: 20px;
   height: 20px;
-  fill: ${({ theme }) => theme.text}; 
+  /* Cor escura para o ícone */
+  fill: #333333; 
   position: absolute;
   right: 10px;
   cursor: pointer;
@@ -177,16 +186,22 @@ const SearchBarUnderline = styled.div`
 `;
 
 function NavbarComponent() {
-  const navigate = useNavigate();
+  // RESTAURADO: 'navigate' é necessário para a navegação interna de busca
+  const navigate = useNavigate(); 
   const [searchQuery, setSearchQuery] = useState('');
 
+  // LÓGICA DE BUSCA INTERNA
   const handleSearch = () => {
-    if (searchQuery.trim()) {
-      navigate(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
+    const trimmedQuery = searchQuery.trim();
+    if (trimmedQuery) {
+      // Redireciona para a página de resultados, passando a query como parâmetro
+      // O nome da rota deve ser o mesmo que você definiu no seu React Router (ex: '/search')
+      navigate(`/search?query=${encodeURIComponent(trimmedQuery)}`);
     }
   };
 
-  // LISTA DE LINKS CORRIGIDA: O item 'Contato' agora é um link de SCROLL para o Footer.
+
+  // LISTA DE LINKS MANTIDA:
   const menuItems = [
     { type: 'scroll', title: 'Início', path: 'noticias' },
     { type: 'scroll', title: 'Quem Somos', path: 'quem-somos' },

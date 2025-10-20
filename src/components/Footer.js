@@ -1,13 +1,29 @@
-// src/components/Footer.js
+// src/components/Footer.js (MODIFICADO para corrigir o erro 'spyCallbacks')
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaLinkedin, FaInstagram, FaFacebookF, FaEnvelope, FaMapMarkerAlt, FaPhone } from 'react-icons/fa'; // Mantive FaMapMarkerAlt, FaEnvelope, FaPhone para uso no novo layout
-import { animateScroll as scroll } from 'react-scroll';
+import { FaLinkedin, FaInstagram, FaFacebookF, FaEnvelope, FaMapMarkerAlt, FaPhone } from 'react-icons/fa'; 
+// REMOVIDO: A importação de 'animateScroll as scroll' de 'react-scroll' para eliminar o erro de spyCallbacks.
 
 // Importa a imagem do logo negativo
 import SaesLogo from '../images/saes_marca_principal_negativa2.png'; 
+
+// FUNÇÃO NATIVA DE SCROLL SUAVE PARA SUBSTITUIR scroll.scrollTo
+const scrollToElement = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+        // Rola até o elemento de forma suave
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Adiciona um pequeno atraso para aplicar um offset, contornando o navbar fixo.
+        setTimeout(() => {
+             const offset = 100;
+             window.scrollBy(0, -offset);
+        }, 100);
+    }
+};
+
 
 // --- Cores e Constantes (Baseado no seu código original) ---
 const PRIMARY_COLOR = 'rgb(243, 146, 0)'; // Laranja de destaque
@@ -178,7 +194,7 @@ const AddressBlock = styled.div`
   }
 `;
 
-// NOVO: Styled Component para o bloco inferior (fixa o erro de compilação)
+// Styled Component para o bloco inferior
 const FooterText = styled.p`
   padding-top: 1.5rem;
   text-align: center;
@@ -213,7 +229,23 @@ function Footer() {
   const [categoryID, setCategoryID] = useState(null);
   const navigate = useNavigate();
 
-  // MANTÉM A LÓGICA DE FETCH DA API DO WORDPRESS
+  // FUNÇÃO PARA ROLAR PARA O TOPO (SUBSTITUI scroll.scrollToTop)
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  
+  // FUNÇÃO PARA TRATAR O LINK ÂNCORA (SUBSTITUI scroll.scrollTo)
+  const handleAnchorLink = (id) => {
+    if (window.location.pathname !== '/') {
+      // Se não estiver na home, navega para a home e adiciona o hash
+      navigate(`/#${id}`);
+    } else {
+      // Se estiver na home, rola suavemente para o elemento usando a função nativa
+      scrollToElement(id);
+    }
+  };
+
+  // MANTÉM A LÓGICA DE FETCH DA API DO WORDPRESS (Sem Alterações)
   useEffect(() => {
     fetch('https://www.saesadvogados.com.br/wp-json/wp/v2/categories')
       .then(res => res.json())
@@ -227,7 +259,7 @@ function Footer() {
 
   useEffect(() => {
     if (categoryID) {
-      fetch(`https://www.saesadvogados.com.br/wp-json/wp/v2/posts?per_page=6&categories=${categoryID}`)
+      fetch(`https://www.saesadvogados.com.br/wp-json/wp/v2/posts?per_page=6&categories=${categoryID}&_embed`) 
         .then(res => res.json())
         .then(data => {
           const unique = data.filter(a => a.title.rendered !== "Newsletter Saes Advogados &#8211; 225");
@@ -241,17 +273,6 @@ function Footer() {
     }
   }, [categoryID]);
   
-  const scrollToTop = () => {
-    scroll.scrollToTop({ duration: 600, smooth: true });
-  };
-  
-  const handleAnchorLink = (id) => {
-    if (window.location.pathname !== '/') {
-      navigate(`/#${id}`);
-    } else {
-      scroll.scrollTo(id, { duration: 600, smooth: true, offset: -100 });
-    }
-  };
 
 
   return (
@@ -298,32 +319,26 @@ function Footer() {
         <FooterSection style={{ minWidth: 'auto' }}>
           <FooterTitle>Fale Conosco</FooterTitle>
           
-          {/* Contatos por email e telefone */}
+          {/* Contatos por email */}
           <LinkWithIcon>
             <FaEnvelope /> 
             <a href="mailto:contato@saesadvogados.com.br">contato@saesadvogados.com.br</a>
           </LinkWithIcon>
           
+          {/* Telefones */}
           <LinkWithIcon>
             <FaPhone />
-            <ExternalLink href="tel:+551135399036">+55 11 3539-9036 (SP)</ExternalLink>
+            <ExternalLink href="tel:+554830245590">(48) 3024-5590 (SC)</ExternalLink>
           </LinkWithIcon>
-          
+
           <LinkWithIcon>
             <FaPhone />
-            <ExternalLink href="tel:+554830245590">+55 48 3024-5590 (SC)</ExternalLink>
+            <ExternalLink href="tel:+551135399036">(11) 3539-9036 (SP)</ExternalLink>
           </LinkWithIcon>
           
           <FooterTitle style={{marginTop: '2rem'}}>Nossas Sedes</FooterTitle>
           
           {/* Blocos de Endereço */}
-          <LinkWithIcon>
-            <FaMapMarkerAlt />
-            <AddressBlock>
-              <p><strong>São Paulo:</strong> Av. Eng. Luiz Carlos Berrini, 105, Cj 1902, Cidade Monções</p>
-            </AddressBlock>
-          </LinkWithIcon>
-
           <LinkWithIcon>
             <FaMapMarkerAlt />
             <AddressBlock>
@@ -338,12 +353,18 @@ function Footer() {
             </AddressBlock>
           </LinkWithIcon>
           
+          <LinkWithIcon>
+            <FaMapMarkerAlt />
+            <AddressBlock>
+              <p><strong>São Paulo:</strong> Av. Eng. Luiz Carlos Berrini, 105, Cj 1902, Cidade Monções</p>
+            </AddressBlock>
+          </LinkWithIcon>
+          
           {/* Redes Sociais */}
           <SocialLinks>
             <SocialIcon href="https://www.linkedin.com" target="_blank" aria-label="LinkedIn"><FaLinkedin /></SocialIcon>
             <SocialIcon href="https://www.instagram.com" target="_blank" aria-label="Instagram"><FaInstagram /></SocialIcon>
             <SocialIcon href="https://www.facebook.com" target="_blank" aria-label="Facebook"><FaFacebookF /></SocialIcon>
-            {/* O ícone FaTwitter não está no seu footer original, removi para manter a consistência com o uso */}
           </SocialLinks>
         </FooterSection>
       </FooterContent>
@@ -352,7 +373,6 @@ function Footer() {
         <img src={SaesLogo} alt="Logo SAES Advogados" />
       </FooterLogoContainer>
       
-      {/* O componente FooterText agora está definido e resolve o erro */}
       <FooterText>© {new Date().getFullYear()} SAES ADVOGADOS. Todos os direitos reservados.</FooterText>
     </FooterWrapper>
   );

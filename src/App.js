@@ -1,4 +1,4 @@
-// src/App.js (MODIFICADO)
+// src/App.js (COMPLETO E ATUALIZADO)
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
@@ -25,7 +25,11 @@ import InformativosPage from './pages/InformativosPage';
 // Importa os componentes de serviço
 import LicenciamentoAmbiental from './pages/LicenciamentoAmbiental'; 
 import DueDiligenceAmbiental from './pages/DueDiligenceAmbiental';
-import ComplianceAmbiental from './pages/ComplianceAmbiental'; // NOVO: Importa o componente de Compliance Ambiental
+import ComplianceAmbiental from './pages/ComplianceAmbiental';
+import PareceresEOpinioesLegais from './pages/PareceresEOpinioesLegais';
+import ConflitosAmbientais from './pages/ConflitosAmbientais';      
+import OutrosServicos from './pages/OutrosServicos';             // NOVO: Importa o componente OutrosServicos
+import Contato from './pages/Contato';
 
 
 function App({ toggleTheme, isDarkMode }) {
@@ -79,14 +83,35 @@ function App({ toggleTheme, isDarkMode }) {
           path="/servicos/compliance-ambiental" 
           element={
             <Layout>
-              <ComplianceAmbiental /> {/* Rota atualizada para usar o componente ComplianceAmbiental */}
+              <ComplianceAmbiental /> 
             </Layout>
           } 
         />
-        <Route path="/servicos/pareceres-e-opinioes-legais" element={<Layout><h2>Pareceres Legais</h2></Layout>} />
-        <Route path="/servicos/conflitos-ambientais" element={<Layout><h2>Conflitos Ambientais</h2></Layout>} />
+        <Route 
+          path="/servicos/pareceres-e-opinioes-legais" 
+          element={
+            <Layout>
+              <PareceresEOpinioesLegais /> 
+            </Layout>
+          } 
+        />
+        <Route 
+          path="/servicos/conflitos-ambientais" 
+          element={
+            <Layout>
+              <ConflitosAmbientais />
+            </Layout>
+          } 
+        />
         <Route path="/servicos/consultoria-estrategica" element={<Layout><h2>Consultoria Estratégica</h2></Layout>} />
-        <Route path="/servicos/outros-servicos" element={<Layout><h2>Outros Serviços</h2></Layout>} />
+        <Route 
+          path="/servicos/outros-servicos" 
+          element={
+            <Layout>
+              <OutrosServicos /> {/* ATUALIZADO: Usando o novo componente OutrosServicos */}
+            </Layout>
+          } 
+        />
 
         {/* OUTRAS ROTAS */}
         <Route 
@@ -138,12 +163,20 @@ function App({ toggleTheme, isDarkMode }) {
           } 
         />
         
-        {/* Rota do Escritório, que foi deslocada para ter o Portfólio */}
+        {/* Rota do Escritório e Contato */}
         <Route
           path="/escritorio"
           element={
             <Layout>
               <Escritorio />
+            </Layout>
+          }
+        />
+        <Route
+          path="/contato"
+          element={
+            <Layout>
+              <Contato />
             </Layout>
           }
         />
