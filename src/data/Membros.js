@@ -14,13 +14,14 @@ import ana from '../images/ana.jpg';
 
 export const membros = [
     {
-      id: 1,
+       id: 1,
       nome: 'Marcos André Bruxel Saes',
       cargo: 'Sócio Fundador | OAB/SC 20.864',
       imagem: marcos,
       email: 'marcos@saesadvogados.com.br',
       linkedin_url: 'https://www.linkedin.com/in/marcos-andr%C3%A9-bruxel-saes-37239348/?originalSubdomain=br',
-      artigos_url: 'https://www.saesadvogados.com.br/author/marcos/',
+      // CORRIGIDO: Alterado para a rota interna para usar a página MarcosArticlesPage
+      artigos_url: '/equipe/marcos/artigos', 
       cursos_url: 'https://www.saesadvogados.com.br/category/cursos+marcos/',
       curriculo: `
         Marcos André Bruxel Saes é advogado, desde 2004. Desde a época em que cursava a faculdade já trabalhava com direito ambiental. Estagiou na Fundação de Meio Ambiente de Florianópolis e posteriormente em escritório especializado, tornando-se sócio do mesmo logo após sua formatura.

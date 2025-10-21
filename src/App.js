@@ -28,8 +28,11 @@ import DueDiligenceAmbiental from './pages/DueDiligenceAmbiental';
 import ComplianceAmbiental from './pages/ComplianceAmbiental';
 import PareceresEOpinioesLegais from './pages/PareceresEOpinioesLegais';
 import ConflitosAmbientais from './pages/ConflitosAmbientais';      
-import OutrosServicos from './pages/OutrosServicos';             // NOVO: Importa o componente OutrosServicos
+import OutrosServicos from './pages/OutrosServicos';             
 import Contato from './pages/Contato';
+
+// NOVO: Importa a página de artigos específicos do Marcos
+import MarcosArticlesPage from './pages/MarcosArticlesPage'; 
 
 
 function App({ toggleTheme, isDarkMode }) {
@@ -108,7 +111,7 @@ function App({ toggleTheme, isDarkMode }) {
           path="/servicos/outros-servicos" 
           element={
             <Layout>
-              <OutrosServicos /> {/* ATUALIZADO: Usando o novo componente OutrosServicos */}
+              <OutrosServicos />
             </Layout>
           } 
         />
@@ -163,6 +166,16 @@ function App({ toggleTheme, isDarkMode }) {
           } 
         />
         
+        {/* Rota Específica de Artigos do Marcos (ADICIONADA) */}
+        <Route 
+          path="/equipe/marcos/artigos" 
+          element={
+            <Layout>
+              <MarcosArticlesPage />
+            </Layout>
+          } 
+        />
+
         {/* Rota do Escritório e Contato */}
         <Route
           path="/escritorio"
